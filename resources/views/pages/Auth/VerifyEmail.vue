@@ -1,69 +1,69 @@
-<template>
-    <Head title="Email Verification" />
+<script lang="ts" setup>
+import { Head, useForm } from '@inertiajs/inertia-vue3'
+import { computed, inject } from 'vue'
+import { Inertia } from '@inertiajs/inertia'
+import JetAuthenticationCardLogo from '@/views/components/AuthenticationCardLogo.vue'
+import WebLayout from '@/views/layouts/WebLayout.vue'
+import { useWidth } from '@/composables/useWidth'
 
-    <jet-authentication-card>
-        <template #logo>
-            <jet-authentication-card-logo />
-        </template>
+const route: any = inject('route')
+const form = useForm({})
+const props = defineProps<{status: string}>()
 
-        <div class="mb-4 text-sm text-gray-600">
-            Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
-        </div>
+function submit () {
+  form.post(route('verification.send'))
+}
 
-        <div class="mb-4 font-medium text-sm text-green-600" v-if="verificationLinkSent" >
-            A new verification link has been sent to the email address you provided during registration.
-        </div>
+function logout () {
+  Inertia.post(route('logout'))
+}
 
-        <form @submit.prevent="submit">
-            <div class="mt-4 flex items-center justify-between">
-                <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Resend Verification Email
-                </jet-button>
+const verificationLinkSent = computed(() => {
+  return props.status === 'verification-link-sent'
+})
 
-                <Link :href="route('logout')" method="post" as="button" class="underline text-sm text-gray-600 hover:text-gray-900">Log Out</Link>
-            </div>
-        </form>
-    </jet-authentication-card>
-</template>
-
-<script lang="ts">
-    import { defineComponent } from 'vue'
-    import JetAuthenticationCard from '@/views/jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/views/jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/views/jetstream/Button.vue'
-    import { Head, Link } from '@inertiajs/inertia-vue3';
-
-    export default defineComponent({
-        components: {
-            Head,
-            JetAuthenticationCard,
-            JetAuthenticationCardLogo,
-            JetButton,
-            Link,
-        },
-        
-        inject: ['route'],
-
-        props: {
-            status: String
-        },
-
-        data() {
-            return {
-                form: this.$inertia.form()
-            }
-        },
-
-        methods: {
-            submit() {
-                this.form.post(this.route('verification.send'))
-            },
-        },
-
-        computed: {
-            verificationLinkSent() {
-                return this.status === 'verification-link-sent';
-            }
-        }
-    })
+const { width } = useWidth()
 </script>
+
+<template>
+  <Head title="Email Verification" />
+  <web-layout>
+    <q-page
+      class="fit column items-center content-center bg-grey-2"
+      :padding="$q.screen.gt.sm"
+    >
+      <jet-authentication-card-logo />
+      <q-card
+        :bordered="$q.screen.lt.sm"
+        :flat="$q.screen.lt.sm"
+        :square="$q.screen.lt.sm"
+        :style="'width: ' + width"
+      >
+        <q-card-section>
+          <p> Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.</p>
+          <p
+            v-show="verificationLinkSent"
+            class="text-positive"
+          >
+            A new verification link has been sent to the email address you provided during registration.
+          </p>
+        </q-card-section>
+        <q-card-actions>
+          <q-btn
+            flat
+            color="primary"
+            label="Resend Verification Email"
+            @click="submit"
+          />
+          <q-space />
+          <a
+            href="#"
+            @click.prevent="logout"
+          >
+            Logout
+          </a>
+        </q-card-actions>
+      </q-card>
+    </q-page>
+  </web-layout>
+</template>
