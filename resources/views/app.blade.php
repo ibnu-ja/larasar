@@ -8,7 +8,7 @@
     @vite
 </head>
 
-<body class="antialiased bg-gray-900">
+<body>
     @inertia
 </body>
 
