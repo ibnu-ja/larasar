@@ -22,7 +22,12 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('welcome');
+
+//create a route named 'test' return inertia::render('Test')
+Route::get('test', function () {
+    return Inertia::render('Test');
+})->name('test');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
