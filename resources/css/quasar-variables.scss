@@ -22,3 +22,29 @@ $positive  : #21BA45;
 $negative  : #C10015;
 $info      : #31CCEC;
 $warning   : #F2C037;
+
+
+$primary-dark   : #97c5f3;
+$secondary-dark : #9ce7de;
+$accent-dark    : #d795e2;
+
+
+.text-primary-dark {
+    color: $primary-dark !important;
+  }
+.bg-primary-dark {
+    background: $primary-dark !important;
+}
+.text-secondary-dark {
+    color: $secondary-dark !important;
+  }
+.bg-secondary-dark {
+    background: $secondary-dark !important;
+}
+
+.text-accent-dark {
+    color: $accent-dark !important;
+  }
+.bg-accent-dark {
+    background: $accent-dark !important;
+}
