@@ -1,100 +1,144 @@
-<template>
-    <Head title="Log in" />
 
-    <jet-authentication-card>
-        <template #logo>
-            <jet-authentication-card-logo />
-        </template>
+<script lang="ts" setup>
+import { Head, Link as inertiaLink, useForm } from '@inertiajs/inertia-vue3'
+import { inject, ref } from 'vue'
+import WebLayout from '@/views/layouts/WebLayout.vue'
+import { useQuasar } from 'quasar'
+import { useWidth } from '@/composables/useWidth'
 
-        <jet-validation-errors class="mb-4" />
+defineProps<{canResetPassword: boolean, status: string}>()
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
+const route: any = inject('route')
 
-        <form @submit.prevent="submit">
-            <div>
-                <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
-            </div>
+route().current('login')
 
-            <div class="mt-4">
-                <jet-label for="password" value="Password" />
-                <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
-            </div>
+// const { xs } = useDisplay()
+const form = useForm({
+  email: '',
+  password: '',
+  remember: ''
+})
 
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <jet-checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
+// console.log(route())
+const showP = ref(false)
 
-            <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Forgot your password?
-                </Link>
+function submit () {
+  console.log(form)
 
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </jet-button>
-            </div>
-        </form>
-    </jet-authentication-card>
-</template>
+  form.post(route('login'), {
+    onFinish: () => form.reset('password')
+  })
+}
 
-<script lang="ts">
-    import { defineComponent } from 'vue'
-    import JetAuthenticationCard from '@/views/jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/views/jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/views/jetstream/Button.vue'
-    import JetInput from '@/views/jetstream/Input.vue'
-    import JetCheckbox from '@/views/jetstream/Checkbox.vue'
-    import JetLabel from '@/views/jetstream/Label.vue'
-    import JetValidationErrors from '@/views/jetstream/ValidationErrors.vue'
-    import { Head, Link } from '@inertiajs/inertia-vue3';
+const $q = useQuasar()
 
-    export default defineComponent({
-        components: {
-            Head,
-            JetAuthenticationCard,
-            JetAuthenticationCardLogo,
-            JetButton,
-            JetInput,
-            JetCheckbox,
-            JetLabel,
-            JetValidationErrors,
-            Link,
-        },
-        
-        inject: ['route'],
+const { width } = useWidth()
 
-        props: {
-            canResetPassword: Boolean,
-            status: String
-        },
-
-        data() {
-            return {
-                form: this.$inertia.form({
-                    email: '',
-                    password: '',
-                    remember: false
-                })
-            }
-        },
-
-        methods: {
-            submit() {
-                this.form
-                    .transform(data => ({
-                        ... data,
-                        remember: this.form.remember ? 'on' : ''
-                    }))
-                    .post(this.route('login'), {
-                        onFinish: () => this.form.reset('password'),
-                    })
-            }
-        }
-    })
 </script>
+
+<template>
+  <Head title="Login" />
+  <web-layout>
+    <q-page
+      :padding="$q.screen.gt.sm"
+      class="flex flex-center"
+    >
+      <q-card
+        :bordered="$q.screen.lt.sm"
+        :flat="$q.screen.lt.sm"
+        :square="$q.screen.lt.sm"
+        class="q-mt-xl"
+        :style="'width: ' + width"
+      >
+        <q-form @submit.prevent="submit">
+          <q-card-section>
+            <inertia-link
+              href="/"
+              class="nostyle cursor-pointer"
+            >
+              <q-avatar
+                size="100px"
+                color="white"
+                class="absolute-center shadow-10"
+              >
+                <svg
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.395 44.428C4.557 40.198 0 32.632 0 24 0 10.745 10.745 0 24 0a23.891 23.891 0 0113.997 4.502c-.2 17.907-11.097 33.245-26.602 39.926z"
+                    fill="#6875F5"
+                  />
+                  <path
+                    d="M14.134 45.885A23.914 23.914 0 0024 48c13.255 0 24-10.745 24-24 0-3.516-.756-6.856-2.115-9.866-4.659 15.143-16.608 27.092-31.75 31.751z"
+                    fill="#6875F5"
+                  />
+                </svg>
+              </q-avatar>
+            </inertia-link>
+          </q-card-section>
+          <q-card-section>
+            <div class="text-center q-pt-lg">
+              <div class="col text-h6 ellipsis">
+                Log in
+              </div>
+            </div>
+          </q-card-section>
+          <q-card-section class="q-gutter-md">
+            <q-input
+              v-model="form.email"
+              :error="!!form.errors.email"
+              :error-message="form.errors.email"
+              outlined
+              label="Email"
+              lazy-rules
+            />
+
+            <q-input
+              v-model="form.password"
+              :error="!!form.errors.password"
+              :error-message="form.errors.password"
+              :type="showP? 'password' : 'text'"
+              outlined
+              label="Password"
+              lazy-rules
+            >
+              <template #append>
+                <q-icon
+                  :name="showP ? 'mdi-eye' : 'mdi-eye-off'"
+                  class="cursor-pointer"
+                  @click="showP = !showP"
+                />
+              </template>
+            </q-input>
+
+            <q-checkbox
+              v-model="form.remember"
+              label="Remember me"
+              true-value="on"
+              false-value=""
+            />
+          </q-card-section>
+          <q-separator />
+          <q-card-actions align="right">
+            <inertia-link
+              v-if="canResetPassword"
+              class="q-mx-md"
+              :href="route('password.request')"
+            >
+              Forgot your password?
+            </inertia-link>
+            <q-btn
+              color="primary"
+              flat
+              type="submit"
+            >
+              Login
+            </q-btn>
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-page>
+  </web-layout>
+</template>
