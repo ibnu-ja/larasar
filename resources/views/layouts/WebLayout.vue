@@ -41,6 +41,7 @@ const $q = useQuasar()
         <inertia-link
           v-if="user"
           href="/dashboard"
+          class="nostyle"
         >
           <q-btn
             flat
