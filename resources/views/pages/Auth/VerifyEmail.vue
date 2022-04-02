@@ -30,6 +30,7 @@ const { width } = useWidth()
   <web-layout>
     <q-page
       class="fit column items-center content-center bg-grey-2"
+      :class="$q.screen.lt.sm ? 'justify-start': 'justify-center'"
       :padding="$q.screen.gt.sm"
     >
       <jet-authentication-card-logo />
@@ -40,6 +41,9 @@ const { width } = useWidth()
         :style="'width: ' + width"
       >
         <q-card-section>
+          <h6 class="text-center">
+            Email Verification
+          </h6>
           <p> Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.</p>
           <p
             v-show="verificationLinkSent"

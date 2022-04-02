@@ -31,6 +31,7 @@ const { width } = useWidth()
   <web-layout>
     <q-page
       class="fit column items-center content-center bg-grey-2"
+      :class="$q.screen.lt.sm ? 'justify-start': 'justify-center'"
       :padding="$q.screen.gt.sm"
     >
       <jet-authentication-card-logo />
@@ -41,14 +42,10 @@ const { width } = useWidth()
         :style="'width: ' + width"
       >
         <q-form @submit.prevent="submit">
-          <q-card-section>
-            <div class="text-center">
-              <h6 class="no-margin">
-                Register
-              </h6>
-            </div>
-          </q-card-section>
           <q-card-section class="q-gutter-md">
+            <h6 class="text-center no-margin">
+              Register
+            </h6>
             <q-input
               v-model="form.email"
               :error="!!form.errors.email"
