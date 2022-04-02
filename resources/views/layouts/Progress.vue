@@ -5,32 +5,37 @@ import { useQuasar } from 'quasar'
 const progress = ref(0)
 const loading = ref(false)
 
+const props = defineProps({
+  trickleSpeed: {
+    type: Number,
+    default: 200
+  },
+  color: {
+    type: String,
+    default: 'primary'
+  }
+})
+
 Inertia.on('start', () => startProgress())
-const trickleSpeed = 200
 
 Inertia.on('finish', () => done())
-
-function trickle () {
-  let amount: number
-  if (progress.value >= 0 && progress.value < 0.2) amount = 0.1
-  else if (progress.value >= 0.2 && progress.value < 0.5) amount = 0.04
-  else if (progress.value >= 0.5 && progress.value < 0.8) amount = 0.02
-  else if (progress.value >= 0.8 && progress.value < 0.99) amount = 0.005
-  else amount = 0
-  progress.value = clamp(progress.value + amount, 0, 0.994)
-}
 
 function startProgress () {
   progress.value = 0
   loading.value = true
-  const work = function () {
-    setTimeout(function () {
-      if (!loading.value) return
-      trickle()
-      if (progress.value >= 0) work()
-    }, trickleSpeed)
-  }
-  work()
+  const interval = setInterval(() => {
+    if (progress.value >= 0.994) {
+      clearInterval(interval)
+    } else {
+      let amount: number
+      if (progress.value >= 0 && progress.value < 0.2) amount = 0.1
+      else if (progress.value >= 0.2 && progress.value < 0.5) amount = 0.04
+      else if (progress.value >= 0.5 && progress.value < 0.8) amount = 0.02
+      else if (progress.value >= 0.8 && progress.value < 0.99) amount = 0.005
+      else amount = 0
+      progress.value = clamp(progress.value + amount, 0, 0.994)
+    }
+  }, props.trickleSpeed)
 }
 
 // stop the progress bar
@@ -52,8 +57,9 @@ const $q = useQuasar()
 <template>
   <q-linear-progress
     v-show="loading"
-    animation-speed="200"
+    :animation-speed="trickleSpeed"
+    style="position: fixed !important; top: 0 !important; z-index: 2001;"
     :value="progress"
-    :color="$q.dark.isActive ? 'primary-dark' : 'primary'"
+    :color="$q.dark.isActive ? color + '-dark' : color"
   />
 </template>

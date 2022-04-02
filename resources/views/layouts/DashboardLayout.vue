@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Link as InertiaLink, usePage } from '@inertiajs/inertia-vue3'
+import { Head, Link as InertiaLink, usePage } from '@inertiajs/inertia-vue3'
 import { Jetstream, Team, User } from '@/scripts/types/inertia-props'
 import { computed, inject, ref } from 'vue'
 import { Inertia } from '@inertiajs/inertia'
@@ -27,9 +27,13 @@ function switchToTeam (team: Team) {
 function logout () {
   Inertia.post(route('logout'))
 }
+
+defineProps<{title: string}>()
 </script>
 
 <template>
+  <Head :title="title" />
+  <Progress />
   <q-layout view="hhh lpR fff">
     <q-header
       :bordered="!$q.dark.isActive"
@@ -46,13 +50,10 @@ function logout () {
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <q-toolbar-title> {{ title }} </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
-      <Progress />
     </q-header>
 
     <q-drawer

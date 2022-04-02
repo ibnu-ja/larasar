@@ -16,6 +16,7 @@ const $q = useQuasar()
 </script>
 
 <template>
+  <Progress />
   <q-layout view="hhh lpR fff">
     <q-header
       :bordered="!$q.dark.isActive"
@@ -96,7 +97,6 @@ const $q = useQuasar()
           </div>
         </template>
       </q-toolbar>
-      <Progress />
     </q-header>
 
     <q-page-container>
