@@ -1,69 +1,88 @@
-<template>
-    <Head title="Secure Area" />
 
-    <jet-authentication-card>
-        <template #logo>
-            <jet-authentication-card-logo />
-        </template>
+<script lang="ts" setup>
+import { Head, useForm } from '@inertiajs/inertia-vue3'
+import { inject, ref } from 'vue'
+import JetAuthenticationCardLogo from '@/views/components/AuthenticationCardLogo.vue'
+import WebLayout from '@/views/layouts/WebLayout.vue'
+import { useWidth } from '@/composables/useWidth'
 
-        <div class="mb-4 text-sm text-gray-600">
-            This is a secure area of the application. Please confirm your password before continuing.
-        </div>
+const route: any = inject('route')
 
-        <jet-validation-errors class="mb-4" />
+const showP = ref(true)
 
-        <form @submit.prevent="submit">
-            <div>
-                <jet-label for="password" value="Password" />
-                <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" autofocus />
-            </div>
+const form = useForm({
+  password: ''
+})
+const password = ref<HTMLInputElement>()
 
-            <div class="flex justify-end mt-4">
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Confirm
-                </jet-button>
-            </div>
-        </form>
-    </jet-authentication-card>
-</template>
+function submit () {
+  form.post(route('password.confirm'), {
+    onFinish: () => {
+      form.reset()
+    },
+    onError: () => {
+      password.value?.focus()
+    }
+  })
+}
 
-<script lang="ts">
-    import { defineComponent } from 'vue';
-    import { Head } from '@inertiajs/inertia-vue3';
-    import JetAuthenticationCard from '@/views/jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/views/jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/views/jetstream/Button.vue'
-    import JetInput from '@/views/jetstream/Input.vue'
-    import JetLabel from '@/views/jetstream/Label.vue'
-    import JetValidationErrors from '@/views/jetstream/ValidationErrors.vue'
-
-    export default defineComponent({
-        components: {
-            Head,
-            JetAuthenticationCard,
-            JetAuthenticationCardLogo,
-            JetButton,
-            JetInput,
-            JetLabel,
-            JetValidationErrors
-        },
-
-        inject: ['route'],
-
-        data() {
-            return {
-                form: this.$inertia.form({
-                    password: '',
-                })
-            }
-        },
-
-        methods: {
-            submit() {
-                this.form.post(this.route('password.confirm'), {
-                    onFinish: () => this.form.reset(),
-                })
-            }
-        }
-    })
+const { width } = useWidth()
 </script>
+
+<template>
+  <web-layout>
+    <Head title="Secure Area" />
+    <q-page
+      class="fit column items-center content-center bg-grey-2"
+      :class="$q.screen.lt.sm ? 'justify-start': 'justify-center'"
+      :padding="$q.screen.gt.sm"
+    >
+      <jet-authentication-card-logo />
+
+      <q-card
+        :bordered="$q.screen.lt.sm"
+        :flat="$q.screen.lt.sm"
+        :square="$q.screen.lt.sm"
+        :style="'width: ' + width"
+      >
+        <q-form @submit.prevent="submit">
+          <q-card-section class="q-gutter-md">
+            <p>
+              This is a secure area of the application. Please confirm your
+              password before continuing.
+            </p>
+
+            <q-input
+              ref="password"
+              v-model="form.password"
+              :error="!!form.errors.password"
+              :error-message="form.errors.password"
+              :type="showP? 'password' : 'text'"
+              outlined
+              label="Password"
+              lazy-rules
+            >
+              <template #append>
+                <q-icon
+                  :name="showP ? 'mdi-eye' : 'mdi-eye-off'"
+                  class="cursor-pointer"
+                  @click="showP = !showP"
+                />
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-separator />
+          <q-card-actions align="right">
+            <q-btn
+              color="primary"
+              flat
+              type="submit"
+            >
+              Confirm
+            </q-btn>
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-page>
+  </web-layout>
+</template>
