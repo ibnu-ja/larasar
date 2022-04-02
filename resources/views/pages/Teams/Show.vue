@@ -26,26 +26,26 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent } from 'vue'
-    import AppLayout from '@/views/layouts/AppLayout.vue'
-    import DeleteTeamForm from '@/views/pages/Teams/Partials/DeleteTeamForm.vue'
-    import JetSectionBorder from '@/views/jetstream/SectionBorder.vue'
-    import TeamMemberManager from '@/views/pages/Teams/Partials/TeamMemberManager.vue'
-    import UpdateTeamNameForm from '@/views/pages/Teams/Partials/UpdateTeamNameForm.vue'
+import { defineComponent } from 'vue'
+import AppLayout from '@/views/layouts/AppLayout.vue'
+import DeleteTeamForm from '@/views/pages/Teams/Partials/DeleteTeamForm.vue'
+import JetSectionBorder from '@/views/jetstream/SectionBorder.vue'
+import TeamMemberManager from '@/views/pages/Teams/Partials/TeamMemberManager.vue'
+import UpdateTeamNameForm from '@/views/pages/Teams/Partials/UpdateTeamNameForm.vue'
 
-    export default defineComponent({
-        props: [
-            'team',
-            'availableRoles',
-            'permissions',
-        ],
+export default defineComponent({
+  props: [
+    'team',
+    'availableRoles',
+    'permissions'
+  ],
 
-        components: {
-            AppLayout,
-            DeleteTeamForm,
-            JetSectionBorder,
-            TeamMemberManager,
-            UpdateTeamNameForm,
-        },
-    })
+  components: {
+    AppLayout,
+    DeleteTeamForm,
+    JetSectionBorder,
+    TeamMemberManager,
+    UpdateTeamNameForm
+  }
+})
 </script>
