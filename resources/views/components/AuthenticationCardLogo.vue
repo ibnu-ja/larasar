@@ -5,7 +5,7 @@ import { Link as InertiaLink } from '@inertiajs/inertia-vue3'
 <template>
   <inertia-link
     href="/"
-    class="nostyle cursor-pointer q-mb-md"
+    class="nostyle cursor-pointer q-my-md"
   >
     <q-avatar
       size="4rem"
