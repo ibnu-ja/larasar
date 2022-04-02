@@ -1,75 +1,69 @@
-<template>
-    <Head title="Forgot Password" />
+<script lang="ts" setup>
+import { Head, useForm } from '@inertiajs/inertia-vue3'
+import JetAuthenticationCardLogo from '@/views/components/AuthenticationCardLogo.vue'
+import WebLayout from '@/views/layouts/WebLayout.vue'
+import { inject } from 'vue'
+import { useWidth } from '@/composables/useWidth'
 
-    <jet-authentication-card>
-        <template #logo>
-            <jet-authentication-card-logo />
-        </template>
+const route: any = inject('route')
+const form = useForm({
+  email: ''
+})
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
-        </div>
+defineProps<{status: string}>()
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
+function submit () {
+  form.post(route('password.email'))
+}
 
-        <jet-validation-errors class="mb-4" />
-
-        <form @submit.prevent="submit">
-            <div>
-                <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
-                </jet-button>
-            </div>
-        </form>
-    </jet-authentication-card>
-</template>
-
-<script lang="ts">
-    import { defineComponent } from 'vue'
-    import { Head } from '@inertiajs/inertia-vue3';
-    import JetAuthenticationCard from '@/views/jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/views/jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/views/jetstream/Button.vue'
-    import JetInput from '@/views/jetstream/Input.vue'
-    import JetLabel from '@/views/jetstream/Label.vue'
-    import JetValidationErrors from '@/views/jetstream/ValidationErrors.vue'
-
-    export default defineComponent({
-        components: {
-            Head,
-            JetAuthenticationCard,
-            JetAuthenticationCardLogo,
-            JetButton,
-            JetInput,
-            JetLabel,
-            JetValidationErrors
-        },
-        
-        inject: ['route'],
-
-        props: {
-            status: String
-        },
-
-        data() {
-            return {
-                form: this.$inertia.form({
-                    email: ''
-                })
-            }
-        },
-
-        methods: {
-            submit() {
-                this.form.post(this.route('password.email'))
-            }
-        }
-    })
+const { width } = useWidth()
 </script>
+
+<template>
+  <Head title="Email Verification" />
+  <web-layout>
+    <q-page
+      class="fit column items-center content-center bg-grey-2"
+      :class="$q.screen.lt.sm ? 'justify-start': 'justify-center'"
+      :padding="$q.screen.gt.sm"
+    >
+      <jet-authentication-card-logo />
+      <q-card
+        :bordered="$q.screen.lt.sm"
+        :flat="$q.screen.lt.sm"
+        :square="$q.screen.lt.sm"
+        :style="'width: ' + width"
+      >
+        <q-form @submit.prevent="submit">
+          <q-card-section>
+            <p>
+              Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+            </p>
+            <p
+              v-show="status"
+              class="text-positive"
+            >
+              {{ status }}
+            </p>
+            <q-input
+              v-model="form.email"
+              :error="!!form.errors.email"
+              :error-message="form.errors.email"
+              outlined
+              label="Email"
+              lazy-rules
+            />
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn
+              flat
+              color="primary"
+              label="Email password reset link"
+              @click="submit"
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-page>
+  </web-layout>
+</template>
