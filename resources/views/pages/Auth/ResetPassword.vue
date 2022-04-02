@@ -1,83 +1,109 @@
-<template>
-    <Head title="Reset Password" />
+<script lang="ts" setup>
+import { Head, useForm } from '@inertiajs/inertia-vue3'
+import { inject, ref } from 'vue'
+import JetAuthenticationCardLogo from '@/views/components/AuthenticationCardLogo.vue'
+import WebLayout from '@/views/layouts/WebLayout.vue'
+import { useWidth } from '@/composables/useWidth'
 
-    <jet-authentication-card>
-        <template #logo>
-            <jet-authentication-card-logo />
-        </template>
+const route: any = inject('route')
 
-        <jet-validation-errors class="mb-4" />
+const props = defineProps<{
+  email: string
+  token: string
+}>()
 
-        <form @submit.prevent="submit">
-            <div>
-                <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
-            </div>
+const showP = ref(true)
+const showCP = ref(true)
+const form = useForm({
+  token: props.token,
+  email: props.email,
+  password: '',
+  password_confirmation: ''
+})
 
-            <div class="mt-4">
-                <jet-label for="password" value="Password" />
-                <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="new-password" />
-            </div>
-
-            <div class="mt-4">
-                <jet-label for="password_confirmation" value="Confirm Password" />
-                <jet-input id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Reset Password
-                </jet-button>
-            </div>
-        </form>
-    </jet-authentication-card>
-</template>
-
-<script lang="ts">
-    import { defineComponent } from 'vue';
-    import { Head } from '@inertiajs/inertia-vue3';
-    import JetAuthenticationCard from '@/views/jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/views/jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/views/jetstream/Button.vue'
-    import JetInput from '@/views/jetstream/Input.vue'
-    import JetLabel from '@/views/jetstream/Label.vue'
-    import JetValidationErrors from '@/views/jetstream/ValidationErrors.vue'
-
-    export default defineComponent({
-        components: {
-            Head,
-            JetAuthenticationCard,
-            JetAuthenticationCardLogo,
-            JetButton,
-            JetInput,
-            JetLabel,
-            JetValidationErrors
-        },
-        
-        inject: ['route'],
-
-        props: {
-            email: String,
-            token: String,
-        },
-
-        data() {
-            return {
-                form: this.$inertia.form({
-                    token: this.token,
-                    email: this.email,
-                    password: '',
-                    password_confirmation: '',
-                })
-            }
-        },
-
-        methods: {
-            submit() {
-                this.form.post(this.route('password.update'), {
-                    onFinish: () => this.form.reset('password', 'password_confirmation'),
-                })
-            }
-        }
-    })
+function submit () {
+  form.post(route('password.update'), {
+    onFinish: () => form.reset('password', 'password_confirmation')
+  })
+}
+const { width } = useWidth()
 </script>
+
+<template>
+  <Head title="Reset Password" />
+  <web-layout>
+    <q-page
+      class="fit column items-center content-center bg-grey-2"
+      :class="$q.screen.lt.sm ? 'justify-start': 'justify-center'"
+      :padding="$q.screen.gt.sm"
+    >
+      <jet-authentication-card-logo />
+      <q-card
+        :bordered="$q.screen.lt.sm"
+        :flat="$q.screen.lt.sm"
+        :square="$q.screen.lt.sm"
+        :style="'width: ' + width"
+      >
+        <q-form @submit.prevent="submit">
+          <q-card-section>
+            <h6 class="text-center">
+              Reset Password
+            </h6>
+            <q-input
+              v-model="form.email"
+              :error="!!form.errors.email"
+              :error-message="form.errors.email"
+              outlined
+              label="Email"
+              lazy-rules
+            />
+
+            <q-input
+              v-model="form.password"
+              :error="!!form.errors.password"
+              :error-message="form.errors.password"
+              :type="showP? 'password' : 'text'"
+              outlined
+              label="Password"
+              lazy-rules
+            >
+              <template #append>
+                <q-icon
+                  :name="showP ? 'mdi-eye' : 'mdi-eye-off'"
+                  class="cursor-pointer"
+                  @click="showP = !showP"
+                />
+              </template>
+            </q-input>
+
+            <q-input
+              v-model="form.password_confirmation"
+              :error="!!form.errors.password_confirmation"
+              :error-message="form.errors.password_confirmation"
+              :type="showCP? 'password' : 'text'"
+              outlined
+              label="Password confirmation"
+              lazy-rules
+            >
+              <template #append>
+                <q-icon
+                  :name="showCP ? 'mdi-eye' : 'mdi-eye-off'"
+                  class="cursor-pointer"
+                  @click="showCP = !showCP"
+                />
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn
+              flat
+              color="primary"
+              label="Reset Password"
+              type="submit"
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-page>
+  </web-layout>
+</template>
