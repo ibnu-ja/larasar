@@ -1,30 +1,14 @@
 <template>
-    <app-layout title="Dashboard">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <welcome />
-                </div>
-            </div>
-        </div>
-    </app-layout>
+  <dashboard-layout :title="'Dashboard'">
+    <q-page
+      :padding="$q.screen.gt.sm"
+    >
+      <welcome />
+    </q-page>
+  </dashboard-layout>
 </template>
 
-<script lang="ts">
-    import { defineComponent } from 'vue'
-    import AppLayout from '@/views/layouts/AppLayout.vue'
-    import Welcome from '@/views/jetstream/Welcome.vue'
-
-    export default defineComponent({
-        components: {
-            AppLayout,
-            Welcome,
-        },
-    })
+<script lang="ts" setup>
+import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
+import Welcome from '@/views/components/Welcome.vue'
 </script>
