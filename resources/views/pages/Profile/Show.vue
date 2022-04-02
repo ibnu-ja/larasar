@@ -1,64 +1,62 @@
-<template>
-    <app-layout title="Profile">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Profile
-            </h2>
-        </template>
-
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-                    <update-profile-information-form :user="$page.props.user" />
-
-                    <jet-section-border />
-                </div>
-
-                <div v-if="$page.props.jetstream.canUpdatePassword">
-                    <update-password-form class="mt-10 sm:mt-0" />
-
-                    <jet-section-border />
-                </div>
-
-                <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
-                    <two-factor-authentication-form class="mt-10 sm:mt-0" />
-
-                    <jet-section-border />
-                </div>
-
-                <logout-other-browser-sessions-form :sessions="sessions" class="mt-10 sm:mt-0" />
-
-                <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-                    <jet-section-border />
-
-                    <delete-user-form class="mt-10 sm:mt-0" />
-                </template>
-            </div>
-        </div>
-    </app-layout>
-</template>
-
-<script lang="ts">
-    import { defineComponent } from 'vue'
-    import AppLayout from '@/views/layouts/AppLayout.vue'
-    import DeleteUserForm from '@/views/pages/Profile/Partials/DeleteUserForm.vue'
-    import JetSectionBorder from '@/views/jetstream/SectionBorder.vue'
-    import LogoutOtherBrowserSessionsForm from '@/views/pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
-    import TwoFactorAuthenticationForm from '@/views/pages/Profile/Partials/TwoFactorAuthenticationForm.vue'
-    import UpdatePasswordForm from '@/views/pages/Profile/Partials/UpdatePasswordForm.vue'
-    import UpdateProfileInformationForm from '@/views/pages/Profile/Partials/UpdateProfileInformationForm.vue'
-
-    export default defineComponent({
-        props: ['sessions'],
-
-        components: {
-            AppLayout,
-            DeleteUserForm,
-            JetSectionBorder,
-            LogoutOtherBrowserSessionsForm,
-            TwoFactorAuthenticationForm,
-            UpdatePasswordForm,
-            UpdateProfileInformationForm,
-        },
-    })
+<script lang="ts" setup>
+import { Jetstream, Session, User } from '@/scripts/types/inertia-props'
+import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
+// import DeleteUserForm from './Partials/DeleteUserForm.vue'
+// import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
+// import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
+// import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
+import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue'
+import { computed } from 'vue'
+import { usePage } from '@inertiajs/inertia-vue3'
+defineProps<{sessions: Session[]}>()
+const user = computed(() => usePage().props.value.user as User)
+const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
 </script>
+
+<template>
+  <!-- eslint-disable vue/multi-word-component-names -->
+  <dashboard-layout title="Profile">
+    <q-page
+      padding
+      class="fit column content-stretch"
+    >
+      <div v-if="jetstream.canUpdateProfileInformation">
+        <update-profile-information-form :user="user" />
+
+        <q-separator class="q-my-md" />
+      </div>
+    </q-page>
+    <!-- <div>
+      <div class="mx-auto py-10 px-sm-6 px-lg-8"> -->
+    <!-- <div v-if="jetstream.canUpdateProfileInformation">
+          <update-profile-information-form :user="user" />
+
+          <v-divider class="my-8" />
+        </div> -->
+
+    <!-- <div v-if="jetstream.canUpdatePassword">
+          <update-password-form class="mt-10 mt-sm-0" />
+
+          <v-divider class="my-8" />
+        </div> -->
+
+    <!-- <div v-if="jetstream.canManageTwoFactorAuthentication">
+          <two-factor-authentication-form class="mt-10 mt-sm-0" />
+
+          <v-divider class="my-8" />
+        </div> -->
+
+    <!-- <logout-other-browser-sessions-form
+          :sessions="sessions"
+          class="mt-10 mt-sm-0"
+        /> -->
+
+    <!-- <template v-if="jetstream.hasAccountDeletionFeatures">
+          <v-divider class="my-8" />
+
+          <delete-user-form class="mt-10 mt-sm-0" />
+        </template> -->
+    <!-- </div>
+    </div> -->
+  </dashboard-layout>
+</template>
