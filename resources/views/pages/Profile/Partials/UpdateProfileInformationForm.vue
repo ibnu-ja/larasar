@@ -24,7 +24,6 @@ function updateProfileInformation () {
   })
 }
 function selectNewPhoto () {
-  // console.log(e)
   photo.value!.click()
 }
 function updatePhotoPreview () {
@@ -60,47 +59,44 @@ function clearPhotoFileInput () {
       <!-- Profile Photo -->
       <div
         v-if="jetstream.managesProfilePhotos"
-        class="mb-4"
+        class="q-gutter-x-md"
       >
         <!-- Profile Photo File Input -->
         <input
           ref="photo"
+          style="display: none;"
           type="file"
-          class="d-none"
           @change="updatePhotoPreview"
         >
         <!-- New Profile Photo Preview -->
         <!-- TODO enable transition -->
-        <v-avatar size="80">
-          <v-img
+        <q-avatar size="100px">
+          <q-img
             v-if="photoPreview"
-            :transition="false"
             :src="photoPreview"
           />
-          <v-img
+          <q-img
             v-else
             :src="user.profile_photo_url"
             :alt="user.name"
           />
-        </v-avatar>
+        </q-avatar>
 
-        <v-btn
-          class="ml-3 mt-2 mr-2"
-          variant="outlined"
+        <q-btn
+          class="q-mx-sm"
+          outline
+          label="Select A New Photo"
           color="info"
           @click.prevent="selectNewPhoto"
-        >
-          Select A New Photo
-        </v-btn>
-        <v-btn
+        />
+        <q-btn
           v-if="user.profile_photo_path"
-          class="mt-2"
-          variant="outlined"
-          color="error"
+          class="q-mx-sm"
+          outline
+          label="Remove Photo"
+          color="negative"
           @click.prevent="deletePhoto"
-        >
-          Remove Photo
-        </v-btn>
+        />
       </div>
 
       <!-- Name -->
@@ -127,13 +123,11 @@ function clearPhotoFileInput () {
 
     <template #actions>
       <transition
-        leave-active-class="transition ease-in duration-1000"
-        leave-class="opacity-100"
-        leave-to-class="opacity-0"
+        enter-active-class="animated fadeInLeft"
+        leave-active-class="animated fadeOutRight"
       >
         <div
           v-show="form.recentlySuccessful"
-          class="text-sm text-gray-600"
         >
           Saved.
         </div>
