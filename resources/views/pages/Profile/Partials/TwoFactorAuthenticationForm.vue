@@ -1,5 +1,139 @@
+
+<script lang="ts" setup>
+// import { defineComponent } from 'vue'
+// import JetActionSection from '@/views/jetstream/ActionSection.vue'
+// import JetButton from '@/views/jetstream/Button.vue'
+// import JetConfirmsPassword from '@/views/jetstream/ConfirmsPassword.vue'
+// import JetDangerButton from '@/views/jetstream/DangerButton.vue'
+// import JetSecondaryButton from '@/views/jetstream/SecondaryButton.vue'
+
+import { computed, inject, ref } from 'vue'
+import AppActionSection from '@/views/components/ActionSection.vue'
+import AppConfirmsPassword from '@/views/components/ConfirmsPassword.vue'
+import CodeBlock from '@/views/components/CodeBlock.vue'
+import { Inertia } from '@inertiajs/inertia'
+
+import { User } from '@/scripts/types/inertia-props'
+import axios from 'axios'
+import { usePage } from '@inertiajs/inertia-vue3'
+
+const enabling = ref(false)
+const disabling = ref(false)
+const qrCode = ref(null)
+const recoveryCodes = ref([])
+
+const route: any = inject('route')
+const user = computed(() => usePage().props.value.user as User)
+
+const twoFactorEnabled = computed(function () {
+  return !enabling.value && user.value.two_factor_enabled
+})
+
+function enableTwoFactorAuthentication () {
+  enabling.value = true
+  Inertia.post(route('two-factor.enable'), {}, {
+    preserveScroll: true,
+    onSuccess: () =>
+      Promise.all([showQrCode(), showRecoveryCodes()]),
+    onFinish: () => (enabling.value = false)
+  })
+}
+const codes = computed(() => {
+  return recoveryCodes.value.join('\n')
+})
+async function showQrCode () {
+  const res = await axios.get(route('two-factor.qr-code'))
+  qrCode.value = res.data.svg
+}
+async function showRecoveryCodes () {
+  const res = await axios.get(route('two-factor.recovery-codes'))
+  recoveryCodes.value = res.data
+}
+async function regenerateRecoveryCodes () {
+  await axios.post('/user/two-factor-recovery-codes')
+  showRecoveryCodes()
+}
+function disableTwoFactorAuthentication () {
+  disabling.value = true
+  Inertia.delete('/user/two-factor-authentication', {
+    preserveScroll: true,
+    onSuccess: () => (disabling.value = false)
+  })
+}
+// export default defineComponent({
+//   components: {
+//     JetActionSection,
+//     JetButton,
+//     JetConfirmsPassword,
+//     JetDangerButton,
+//     JetSecondaryButton
+//   },
+
+//   data () {
+//     return {
+//       enabling: false,
+//       disabling: false,
+
+//       qrCode: null,
+//       recoveryCodes: []
+//     }
+//   },
+
+//   computed: {
+//     twoFactorEnabled () {
+//       return !this.enabling && this.$page.props.user.two_factor_enabled
+//     }
+//   },
+
+//   methods: {
+//     enableTwoFactorAuthentication () {
+//       this.enabling = true
+
+//       this.$inertia.post('/user/two-factor-authentication', {}, {
+//         preserveScroll: true,
+//         onSuccess: () => Promise.all([
+//           this.showQrCode(),
+//           this.showRecoveryCodes()
+//         ]),
+//         onFinish: () => (this.enabling = false)
+//       })
+//     },
+
+//     showQrCode () {
+//       return axios.get('/user/two-factor-qr-code')
+//         .then(response => {
+//           this.qrCode = response.data.svg
+//         })
+//     },
+
+//     showRecoveryCodes () {
+//       return axios.get('/user/two-factor-recovery-codes')
+//         .then(response => {
+//           this.recoveryCodes = response.data
+//         })
+//     },
+
+//     regenerateRecoveryCodes () {
+//       axios.post('/user/two-factor-recovery-codes')
+//         .then(response => {
+//           this.showRecoveryCodes()
+//         })
+//     },
+
+//     disableTwoFactorAuthentication () {
+//       this.disabling = true
+
+//       this.$inertia.delete('/user/two-factor-authentication', {
+//         preserveScroll: true,
+//         onSuccess: () => (this.disabling = false)
+//       })
+//     }
+//   }
+// })
+</script>
+
 <template>
-  <jet-action-section>
+  <app-action-section>
     <template #title>
       Two Factor Authentication
     </template>
@@ -8,181 +142,112 @@
       Add additional security to your account using two factor authentication.
     </template>
 
-    <template #content>
-      <h3
+    <template
+      #status
+    >
+      <template
         v-if="twoFactorEnabled"
-        class="text-lg font-medium text-gray-900"
       >
         You have enabled two factor authentication.
-      </h3>
-
-      <h3
-        v-else
-        class="text-lg font-medium text-gray-900"
-      >
+      </template>
+      <template v-else>
         You have not enabled two factor authentication.
-      </h3>
+      </template>
+    </template>
 
-      <div class="mt-3 max-w-xl text-sm text-gray-600">
-        <p>
-          When two factor authentication is enabled, you will be prompted for a secure, random token during authentication. You may retrieve this token from your phone's Google Authenticator application.
-        </p>
-      </div>
+    <template #content>
+      <p>
+        When two factor authentication is enabled, you will be prompted for a
+        secure, random token during authentication. You may retrieve this
+        token from your phone's Google Authenticator application.
+      </p>
 
       <div v-if="twoFactorEnabled">
         <div v-if="qrCode">
-          <div class="mt-4 max-w-xl text-sm text-gray-600">
-            <p class="font-semibold">
-              Two factor authentication is now enabled. Scan the following QR code using your phone's authenticator application.
-            </p>
-          </div>
+          <p>
+            Two factor authentication is now enabled. Scan the following QR
+            code using your phone's authenticator application.
+          </p>
 
-          <div
-            class="mt-4"
-            v-html="qrCode"
-          />
+          <v-sheet
+            class="my-4 mx-auto pa-4"
+            color="white"
+            max-width="224"
+          >
+            <!-- eslint-disable vue/no-v-html -->
+            <div
+              class="text-center"
+              v-html="qrCode"
+            />
+          <!-- eslint-enable vue/no-v-html -->
+          </v-sheet>
         </div>
 
         <div v-if="recoveryCodes.length > 0">
-          <div class="mt-4 max-w-xl text-sm text-gray-600">
-            <p class="font-semibold">
-              Store these recovery codes in a secure password manager. They can be used to recover access to your account if your two factor authentication device is lost.
-            </p>
-          </div>
-
-          <div class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-gray-100 rounded-lg">
-            <div
-              v-for="code in recoveryCodes"
-              :key="code"
-            >
-              {{ code }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-5">
-        <div v-if="! twoFactorEnabled">
-          <jet-confirms-password @confirmed="enableTwoFactorAuthentication">
-            <jet-button
-              type="button"
-              :class="{ 'opacity-25': enabling }"
-              :disabled="enabling"
-            >
-              Enable
-            </jet-button>
-          </jet-confirms-password>
-        </div>
-
-        <div v-else>
-          <jet-confirms-password @confirmed="regenerateRecoveryCodes">
-            <jet-secondary-button
-              v-if="recoveryCodes.length > 0"
-              class="mr-3"
-            >
-              Regenerate Recovery Codes
-            </jet-secondary-button>
-          </jet-confirms-password>
-
-          <jet-confirms-password @confirmed="showRecoveryCodes">
-            <jet-secondary-button
-              v-if="recoveryCodes.length === 0"
-              class="mr-3"
-            >
-              Show Recovery Codes
-            </jet-secondary-button>
-          </jet-confirms-password>
-
-          <jet-confirms-password @confirmed="disableTwoFactorAuthentication">
-            <jet-danger-button
-              :class="{ 'opacity-25': disabling }"
-              :disabled="disabling"
-            >
-              Disable
-            </jet-danger-button>
-          </jet-confirms-password>
+          <p class="font-semibold">
+            Store these recovery codes in a secure password manager. They can
+            be used to recover access to your account if your two factor
+            authentication device is lost.
+          </p>
+          <q-card
+            bordered
+            flat
+          >
+            <code-block
+              lang="text"
+              :code="codes"
+            />
+          </q-card>
         </div>
       </div>
     </template>
-  </jet-action-section>
+    <template #actions>
+      <app-confirms-password
+        v-if="!twoFactorEnabled"
+        @confirmed="enableTwoFactorAuthentication"
+      >
+        <q-btn
+          color="primary"
+          flat
+          label="Enable"
+          :disabled="enabling"
+        />
+      </app-confirms-password>
+
+      <template v-else>
+        <app-confirms-password
+          @confirmed="regenerateRecoveryCodes"
+        >
+          <q-btn
+            v-if="recoveryCodes.length > 0"
+            outline
+            label="Regenerate Recovery Codes"
+          />
+        </app-confirms-password>
+
+        <app-confirms-password
+          @confirmed="showRecoveryCodes"
+        >
+          <q-btn
+            v-if="recoveryCodes.length === 0"
+            style="margin-left: 8px;"
+            outline
+            label="Show Recovery Codes"
+          />
+        </app-confirms-password>
+
+        <app-confirms-password
+          @confirmed="disableTwoFactorAuthentication"
+        >
+          <q-btn
+            flat
+            style="margin-left: 8px;"
+            color="negative"
+            label="Disable"
+            :disabled="disabling"
+          />
+        </app-confirms-password>
+      </template>
+    </template>
+  </app-action-section>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import JetActionSection from '@/views/jetstream/ActionSection.vue'
-import JetButton from '@/views/jetstream/Button.vue'
-import JetConfirmsPassword from '@/views/jetstream/ConfirmsPassword.vue'
-import JetDangerButton from '@/views/jetstream/DangerButton.vue'
-import JetSecondaryButton from '@/views/jetstream/SecondaryButton.vue'
-
-export default defineComponent({
-  components: {
-    JetActionSection,
-    JetButton,
-    JetConfirmsPassword,
-    JetDangerButton,
-    JetSecondaryButton
-  },
-
-  data () {
-    return {
-      enabling: false,
-      disabling: false,
-
-      qrCode: null,
-      recoveryCodes: []
-    }
-  },
-
-  computed: {
-    twoFactorEnabled () {
-      return !this.enabling && this.$page.props.user.two_factor_enabled
-    }
-  },
-
-  methods: {
-    enableTwoFactorAuthentication () {
-      this.enabling = true
-
-      this.$inertia.post('/user/two-factor-authentication', {}, {
-        preserveScroll: true,
-        onSuccess: () => Promise.all([
-          this.showQrCode(),
-          this.showRecoveryCodes()
-        ]),
-        onFinish: () => (this.enabling = false)
-      })
-    },
-
-    showQrCode () {
-      return axios.get('/user/two-factor-qr-code')
-        .then(response => {
-          this.qrCode = response.data.svg
-        })
-    },
-
-    showRecoveryCodes () {
-      return axios.get('/user/two-factor-recovery-codes')
-        .then(response => {
-          this.recoveryCodes = response.data
-        })
-    },
-
-    regenerateRecoveryCodes () {
-      axios.post('/user/two-factor-recovery-codes')
-        .then(response => {
-          this.showRecoveryCodes()
-        })
-    },
-
-    disableTwoFactorAuthentication () {
-      this.disabling = true
-
-      this.$inertia.delete('/user/two-factor-authentication', {
-        preserveScroll: true,
-        onSuccess: () => (this.disabling = false)
-      })
-    }
-  }
-})
-</script>

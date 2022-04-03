@@ -2,9 +2,9 @@
 import { Jetstream, Session, User } from '@/scripts/types/inertia-props'
 import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
 // import DeleteUserForm from './Partials/DeleteUserForm.vue'
-// import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
-// import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
-// import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
+import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
+import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
+import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue'
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/inertia-vue3'
@@ -25,26 +25,22 @@ const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
 
         <q-separator class="q-my-md" />
       </div>
+
+      <div v-if="jetstream.canUpdatePassword">
+        <update-password-form />
+
+        <q-separator class="q-my-md" />
+      </div>
+      <div v-if="jetstream.canManageTwoFactorAuthentication">
+        <two-factor-authentication-form />
+
+        <q-separator class="q-my-md" />
+      </div>
+
+      <logout-other-browser-sessions-form
+        :sessions="sessions"
+      />
     </q-page>
-    <!-- <div>
-      <div class="mx-auto py-10 px-sm-6 px-lg-8"> -->
-    <!-- <div v-if="jetstream.canUpdateProfileInformation">
-          <update-profile-information-form :user="user" />
-
-          <v-divider class="my-8" />
-        </div> -->
-
-    <!-- <div v-if="jetstream.canUpdatePassword">
-          <update-password-form class="mt-10 mt-sm-0" />
-
-          <v-divider class="my-8" />
-        </div> -->
-
-    <!-- <div v-if="jetstream.canManageTwoFactorAuthentication">
-          <two-factor-authentication-form class="mt-10 mt-sm-0" />
-
-          <v-divider class="my-8" />
-        </div> -->
 
     <!-- <logout-other-browser-sessions-form
           :sessions="sessions"
@@ -56,7 +52,5 @@ const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
 
           <delete-user-form class="mt-10 mt-sm-0" />
         </template> -->
-    <!-- </div>
-    </div> -->
   </dashboard-layout>
 </template>
