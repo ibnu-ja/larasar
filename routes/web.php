@@ -27,7 +27,7 @@ Route::get('/', function () {
 //create a route named 'test' return inertia::render('Test')
 Route::get('test', function () {
     return Inertia::render('Test');
-})->name('test');
+})->name('test')->middleware('password.confirm');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');

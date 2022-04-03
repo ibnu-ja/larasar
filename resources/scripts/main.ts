@@ -1,6 +1,10 @@
 // Import icon libraries
 import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
 import '@quasar/extras/mdi-v6/mdi-v6.css'
+
+import '@quasar/extras/animate/fadeInLeft.css'
+import '@quasar/extras/animate/fadeOutRight.css'
+
 import 'quasar/src/css/index.sass'
 import { createApp, h } from 'vue'
 // import { InertiaProgress } from '@inertiajs/progress'
