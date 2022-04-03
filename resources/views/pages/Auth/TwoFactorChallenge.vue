@@ -1,134 +1,119 @@
-<template>
-  <Head title="Two-factor Confirmation" />
+<script lang="ts" setup>
+import { Head, useForm } from '@inertiajs/inertia-vue3'
+import { inject, ref } from 'vue'
+import JetAuthenticationCardLogo from '@/views/components/AuthenticationCardLogo.vue'
+// import ValidationErrors from '@/views/components/ValidationErrors.vue'
+import WebLayout from '@/views/layouts/WebLayout.vue'
+import { useQuasar } from 'quasar'
+import { useWidth } from '@/composables/useWidth'
 
-  <jet-authentication-card>
-    <template #logo>
-      <jet-authentication-card-logo />
-    </template>
-
-    <div class="mb-4 text-sm text-gray-600">
-      <template v-if="! recovery">
-        Please confirm access to your account by entering the authentication code provided by your authenticator application.
-      </template>
-
-      <template v-else>
-        Please confirm access to your account by entering one of your emergency recovery codes.
-      </template>
-    </div>
-
-    <jet-validation-errors class="mb-4" />
-
-    <form @submit.prevent="submit">
-      <div v-if="! recovery">
-        <jet-label
-          for="code"
-          value="Code"
-        />
-        <jet-input
-          id="code"
-          ref="code"
-          v-model="form.code"
-          type="text"
-          inputmode="numeric"
-          class="mt-1 block w-full"
-          autofocus
-          autocomplete="one-time-code"
-        />
-      </div>
-
-      <div v-else>
-        <jet-label
-          for="recovery_code"
-          value="Recovery Code"
-        />
-        <jet-input
-          id="recovery_code"
-          ref="recovery_code"
-          v-model="form.recovery_code"
-          type="text"
-          class="mt-1 block w-full"
-          autocomplete="one-time-code"
-        />
-      </div>
-
-      <div class="flex items-center justify-end mt-4">
-        <button
-          type="button"
-          class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
-          @click.prevent="toggleRecovery"
-        >
-          <template v-if="! recovery">
-            Use a recovery code
-          </template>
-
-          <template v-else>
-            Use an authentication code
-          </template>
-        </button>
-
-        <jet-button
-          class="ml-4"
-          :class="{ 'opacity-25': form.processing }"
-          :disabled="form.processing"
-        >
-          Log in
-        </jet-button>
-      </div>
-    </form>
-  </jet-authentication-card>
-</template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { Head } from '@inertiajs/inertia-vue3'
-import JetAuthenticationCard from '@/views/jetstream/AuthenticationCard.vue'
-import JetAuthenticationCardLogo from '@/views/jetstream/AuthenticationCardLogo.vue'
-import JetButton from '@/views/jetstream/Button.vue'
-import JetInput from '@/views/jetstream/Input.vue'
-import JetLabel from '@/views/jetstream/Label.vue'
-import JetValidationErrors from '@/views/jetstream/ValidationErrors.vue'
-
-export default defineComponent({
-  components: {
-    Head,
-    JetAuthenticationCard,
-    JetAuthenticationCardLogo,
-    JetButton,
-    JetInput,
-    JetLabel,
-    JetValidationErrors
-  },
-
-  inject: ['route'],
-
-  data () {
-    return {
-      recovery: false,
-      form: this.$inertia.form({
-        code: '',
-        recovery_code: ''
-      })
-    }
-  },
-
-  methods: {
-    toggleRecovery () {
-      this.recovery ^= true
-
-      this.$nextTick(() => {
-        if (this.recovery) {
-          this.$refs.recovery_code.focus()
-          this.form.code = ''
-        } else {
-          this.$refs.code.focus()
-          this.form.recovery_code = ''
-        }
-      })
-    },
-
-    submit () {
-      this.form.post(this.route('two-factor.login'))
-    }
-  }
+const route: any = inject('route')
+const recovery = ref(false)
+const code = ref(null)
+const form = useForm({
+  code: '',
+  recovery_code: ''
 })
+
+const $q = useQuasar()
+
+const { width } = useWidth()
+
+const recoveryCode = ref(null)
+
+function toggleRecovery () {
+  recovery.value = recovery.value !== true
+  form.clearErrors()
+  form.reset()
+}
+
+function submit () {
+  form.post(route('two-factor.login'))
+}
 </script>
+
+<template>
+  <Head title="Login" />
+  <web-layout>
+    <q-page
+      class="fit column items-center content-center bg-grey-2"
+      :class="$q.screen.lt.sm ? 'justify-start': 'justify-center'"
+      :padding="$q.screen.gt.sm"
+    >
+      <jet-authentication-card-logo />
+
+      <q-card
+        :bordered="$q.screen.lt.sm"
+        :flat="$q.screen.lt.sm"
+        :square="$q.screen.lt.sm"
+        :style="'width: ' + width"
+      >
+        <q-form @submit.prevent="submit">
+          <q-card-section>
+            <h6>
+              Two Factor authentication
+            </h6>
+            <!-- <validation-errors class="mb-4" /> -->
+
+            <template v-if="!recovery">
+              <p>
+                Please confirm access to your account by entering the authentication code provided by your authenticator application.
+              </p>
+              <q-input
+                ref="code"
+                v-model="form.code"
+                :error="!!form.errors.code"
+                :error-message="form.errors.code"
+                type="text"
+                inputmode="numeric"
+                autofocus
+                autocomplete="one-time-code"
+                outlined
+                label="Code"
+                required
+              />
+            </template>
+
+            <template v-else>
+              <p>
+                Please confirm access to your account by entering one of your emergency recovery codes.
+              </p>
+              <!-- TODO use 2fa component when released -->
+
+              <q-input
+                ref="recoveryCode"
+                v-model="form.recovery_code"
+                :error="!!form.errors.code"
+                :error-message="form.errors.code"
+                type="text"
+                inputmode="numeric"
+                autofocus
+                autocomplete="one-time-code"
+                outlined
+                label="Recovery Code"
+                required
+              />
+            </template>
+          </q-card-section>
+          <q-card-actions>
+            <a
+              href="#"
+              @click.prevent="toggleRecovery"
+              v-text="
+                !recovery ? 'Use recovery code' : 'Use authenticator code'
+              "
+            />
+            <q-space />
+            <q-btn
+              type="submit"
+              color="primary"
+              flat
+              label="Sign In"
+              :disabled="form.processing"
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-page>
+  </web-layout>
+</template>
