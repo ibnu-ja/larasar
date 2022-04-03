@@ -78,8 +78,6 @@ function submit () {
               <p>
                 Please confirm access to your account by entering one of your emergency recovery codes.
               </p>
-              <!-- TODO use 2fa component when released -->
-
               <q-input
                 ref="recoveryCode"
                 v-model="form.recovery_code"
