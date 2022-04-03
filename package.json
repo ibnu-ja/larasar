@@ -8,7 +8,7 @@
         "@inertiajs/inertia": "^0.10.0",
         "@inertiajs/inertia-vue3": "^0.5.1",
         "@quasar/extras": "^1.13.3",
-        "@quasar/vite-plugin": "^1.0.7",
+        "@quasar/vite-plugin": "~1.0.7",
         "@tailwindcss/forms": "^0.4.0",
         "@tailwindcss/typography": "^0.5.0",
         "@types/tailwindcss": "^3.0.9",
