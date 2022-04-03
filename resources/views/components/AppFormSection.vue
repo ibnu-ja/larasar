@@ -27,6 +27,8 @@ defineEmits(['submitted'])
               <slot name="form" />
             </q-card-section>
 
+            <q-separator />
+
             <q-card-actions v-if="hasActions">
               <slot name="actions" />
             </q-card-actions>
