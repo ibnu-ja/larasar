@@ -4,7 +4,7 @@ import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
 // import DeleteUserForm from './Partials/DeleteUserForm.vue'
 // import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
 // import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
-// import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
+import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue'
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/inertia-vue3'
@@ -25,17 +25,19 @@ const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
 
         <q-separator class="q-my-md" />
       </div>
+
+      <div v-if="jetstream.canUpdatePassword">
+        <update-password-form />
+
+        <q-separator class="q-my-md" />
+      </div>
+
+      <p class="text-center text-primary-dark">
+        aaa
+      </p>
     </q-page>
-    <!-- <div>
-      <div class="mx-auto py-10 px-sm-6 px-lg-8"> -->
     <!-- <div v-if="jetstream.canUpdateProfileInformation">
           <update-profile-information-form :user="user" />
-
-          <v-divider class="my-8" />
-        </div> -->
-
-    <!-- <div v-if="jetstream.canUpdatePassword">
-          <update-password-form class="mt-10 mt-sm-0" />
 
           <v-divider class="my-8" />
         </div> -->
@@ -56,7 +58,5 @@ const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
 
           <delete-user-form class="mt-10 mt-sm-0" />
         </template> -->
-    <!-- </div>
-    </div> -->
   </dashboard-layout>
 </template>
