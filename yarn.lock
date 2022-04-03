@@ -276,10 +276,10 @@
   resolved "https://registry.yarnpkg.com/@quasar/extras/-/extras-1.13.5.tgz#5be677a800566192ea1bac8b9a796b5b66acd0f5"
   integrity sha512-H4X3jwqOJpDrn1Pof1mJIpoHdBrZQSR9ZpnQ7RCkJsJccpTyQzs8Q6ehVXfIZrco2kd3UPitRQqEiW7k45ckLg==
 
-"@quasar/vite-plugin@~1.0.7":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@quasar/vite-plugin/-/vite-plugin-1.0.8.tgz#6eccbf37573d364deb4bc14f5eee51702fc3460a"
-  integrity sha512-rsLIjLp02pjaBDaxMi6JRxGs1O3a0z7HV4zugrULhgfDtytO7DKebGqYghFqjBHBjUbGEQJdnVkT0qWH1NLIGw==
+"@quasar/vite-plugin@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@quasar/vite-plugin/-/vite-plugin-1.0.7.tgz#a7e0ac487c7b653b3c78511a23741af1e9af7862"
+  integrity sha512-cDKP2UH2O7fUloWXmlzJhBgyDlcEIvslhC0jTnZ1HE5dWFETjpBZ4ydB5ECFWbDRnZkKTrmqrmVquuy/bDLCVw==
 
 "@tailwindcss/forms@^0.4.0":
   version "0.4.1"
