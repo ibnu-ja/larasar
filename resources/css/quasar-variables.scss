@@ -12,6 +12,22 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
+/// Incrementally lighten a color in a more effective way than with lighten()
+/// @param {Color} $color - color to tint
+/// @param {Number} $percentage - Percentage of white in the returned color
+/// @return {Color} - The lightened color
+@function tint($color, $percentage) {
+    @return mix(#fff, $color, $percentage);
+}
+
+/// Incrementally darken a color in a more effective way than with darken()
+/// @param {Color} $color - Color to shade
+/// @param {Number} $percentage - Percentage of black in the returned color
+/// @return {Color} - The darkened color
+@function shade($color, $percentage) {
+    @return mix(#000, $color, $percentage);
+}
+
 $primary: #1976d2;
 $secondary: #26a69a;
 $accent: #9c27b0;
@@ -26,6 +42,31 @@ $warning: #f2c037;
 $primary-dark: #97c5f3;
 $secondary-dark: #9ce7de;
 $accent-dark: #d795e2;
+
+.bg-primary-active {
+    background-color: tint($primary, 90);
+}
+
+.bg-secondary-active {
+    background-color: tint($secondary, 90);
+}
+
+.bg-accent-active {
+    background-color: tint($accent, 90);
+}
+
+.bg-positive-active {
+    background-color: tint($positive, 90);
+}
+.bg-negative-active {
+    background-color: tint($negative, 90);
+}
+.bg-info-active {
+    background-color: tint($info, 90);
+}
+.bg-warning-active {
+    background-color: tint($warning, 90);
+}
 
 .text-primary-dark {
     color: $primary-dark !important;
@@ -47,7 +88,12 @@ $accent-dark: #d795e2;
     background: $accent-dark !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin-top: 0;
     margin-bottom: 16px;
 }

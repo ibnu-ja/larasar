@@ -183,6 +183,8 @@ defineProps<{title: string}>()
           >
             <q-item
               clickable
+              active-class="bg-primary-active"
+              :class="{'bg-primary-active': route().current('profile.show')}"
               :active="route().current('profile.show')"
             >
               <q-item-section avatar>
