@@ -33,15 +33,10 @@ const form = ref({
 const error = ref<string>()
 
 function startConfirmingPassword () {
-  console.log('startConfirmingPassword')
-
   axios.get(route('password.confirmation')).then(response => {
     if (response.data.confirmed) {
-      console.log('confirmed')
-
       emit('confirmed')
     } else {
-      console.log('confirming')
       confirmingPassword.value = true
       setTimeout(() => password.value?.focus(), 250)
     }

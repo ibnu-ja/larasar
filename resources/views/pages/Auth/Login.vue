@@ -20,12 +20,9 @@ const form = useForm({
   remember: ''
 })
 
-// console.log(route())
 const showP = ref(true)
 
 function submit () {
-  console.log(form)
-
   form.post(route('login'), {
     onFinish: () => form.reset('password')
   })
