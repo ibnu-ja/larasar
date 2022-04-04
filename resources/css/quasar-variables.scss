@@ -44,28 +44,28 @@ $secondary-dark: #9ce7de;
 $accent-dark: #d795e2;
 
 .bg-primary-active {
-    background-color: tint($primary, 90);
+    background-color: tint($primary, 85);
 }
 
 .bg-secondary-active {
-    background-color: tint($secondary, 90);
+    background-color: tint($secondary, 85);
 }
 
 .bg-accent-active {
-    background-color: tint($accent, 90);
+    background-color: tint($accent, 85);
 }
 
 .bg-positive-active {
-    background-color: tint($positive, 90);
+    background-color: tint($positive, 85);
 }
 .bg-negative-active {
-    background-color: tint($negative, 90);
+    background-color: tint($negative, 85);
 }
 .bg-info-active {
-    background-color: tint($info, 90);
+    background-color: tint($info, 85);
 }
 .bg-warning-active {
-    background-color: tint($warning, 90);
+    background-color: tint($warning, 85);
 }
 
 .text-primary-dark {

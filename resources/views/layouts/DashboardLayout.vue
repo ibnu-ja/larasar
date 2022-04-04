@@ -28,7 +28,7 @@ function logout () {
   Inertia.post(route('logout'))
 }
 
-defineProps<{title: string}>()
+defineProps<{ title: string }>()
 </script>
 
 <template>
@@ -43,14 +43,13 @@ defineProps<{title: string}>()
       <q-toolbar>
         <q-btn
           flat
-
           round
           icon="mdi-menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> {{ title }} </q-toolbar-title>
+        <q-toolbar-title>{{ title }}</q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
@@ -80,9 +79,14 @@ defineProps<{title: string}>()
           <div v-text="user.email" />
         </div>
       </q-img>
-      <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
-        <q-list>
-          <q-item-label header>
+      <q-scroll-area
+        style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd"
+      >
+        <q-list id="nav">
+          <q-item-label
+            header
+            class="q-pa-sm"
+          >
             Home
           </q-item-label>
           <inertia-link
@@ -91,6 +95,8 @@ defineProps<{title: string}>()
           >
             <q-item
               clickable
+              active-class="bg-primary-active"
+              :class="{ 'bg-primary-active': route().current('dashboard') }"
               :active="route().current('dashboard')"
             >
               <q-item-section avatar>
@@ -109,7 +115,8 @@ defineProps<{title: string}>()
           >
             <q-item
               clickable
-
+              active-class="bg-primary-active"
+              :class="{ 'bg-primary-active': route().current('tokens.index') }"
               :active="route().current('api-tokens.index')"
             >
               <q-item-section avatar>
@@ -123,7 +130,10 @@ defineProps<{title: string}>()
           </inertia-link>
           <q-separator />
           <template v-if="jetstream.hasTeamFeatures">
-            <q-item-label header>
+            <q-item-label
+              header
+              class="q-pa-sm"
+            >
               Manage Team
             </q-item-label>
             <inertia-link
@@ -132,7 +142,8 @@ defineProps<{title: string}>()
             >
               <q-item
                 v-if="jetstream.canCreateTeams"
-
+                active-class="bg-primary-active"
+                :class="{ 'bg-primary-active': route().current('teams.create') }"
                 clickable
                 :active="route().current('teams.create')"
               >
@@ -145,7 +156,10 @@ defineProps<{title: string}>()
                 </q-item-section>
               </q-item>
             </inertia-link>
-            <q-item-label header>
+            <q-item-label
+              header
+              class="q-pa-sm"
+            >
               Switch Teams
             </q-item-label>
             <template
@@ -173,7 +187,10 @@ defineProps<{title: string}>()
             <q-separator />
           </template>
 
-          <q-item-label header>
+          <q-item-label
+            header
+            class="q-pa-sm"
+          >
             Account
           </q-item-label>
 
@@ -184,7 +201,7 @@ defineProps<{title: string}>()
             <q-item
               clickable
               active-class="bg-primary-active"
-              :class="{'bg-primary-active': route().current('profile.show')}"
+              :class="{ 'bg-primary-active': route().current('profile.show') }"
               :active="route().current('profile.show')"
             >
               <q-item-section avatar>
@@ -192,9 +209,7 @@ defineProps<{title: string}>()
               </q-item-section>
 
               <q-item-section>
-                <q-item-label>
-                  Profile
-                </q-item-label>
+                <q-item-label>Profile</q-item-label>
               </q-item-section>
             </q-item>
           </inertia-link>
@@ -203,9 +218,7 @@ defineProps<{title: string}>()
             @click.prevent="logout"
           >
             <q-item-section avatar>
-              <q-icon
-                name="mdi-logout"
-              />
+              <q-icon name="mdi-logout" />
             </q-item-section>
             <q-item-section>
               <q-item-label>Logout</q-item-label>
@@ -220,3 +233,23 @@ defineProps<{title: string}>()
     </q-page-container>
   </q-layout>
 </template>
+
+<style lang="scss">
+#nav {
+  div.q-item {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    border-radius: 5px;
+    min-height: 38px;
+    padding: 4px 8px;
+  }
+  div.q-item__label {
+    max-width: 100%;
+    font-size: 0.8125rem;
+  }
+  div.q-item__section--avatar {
+    min-width: 32px;
+  }
+}
+</style>
