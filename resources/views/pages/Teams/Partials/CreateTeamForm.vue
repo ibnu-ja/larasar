@@ -1,5 +1,26 @@
+<script lang="ts" setup>
+import { computed, inject } from 'vue'
+import { useForm, usePage } from '@inertiajs/inertia-vue3'
+import FormSection from '@/views/components/AppFormSection.vue'
+import { User } from '@/scripts/types/inertia-props'
+
+const user = computed(() => usePage().props.value.user as User)
+
+const route: any = inject('route')
+const form = useForm({
+  name: ''
+})
+
+function createTeam () {
+  form.post(route('teams.store'), {
+    errorBag: 'createTeam',
+    preserveScroll: true
+  })
+}
+</script>
+
 <template>
-  <jet-form-section @submitted="createTeam">
+  <form-section @submitted="createTeam">
     <template #title>
       Team Details
     </template>
@@ -9,87 +30,51 @@
     </template>
 
     <template #form>
-      <div class="col-span-6">
-        <jet-label value="Team Owner" />
-
-        <div class="flex items-center mt-2">
-          <img
-            class="object-cover w-12 h-12 rounded-full"
-            :src="$page.props.user.profile_photo_url"
-            :alt="$page.props.user.name"
-          >
-
-          <div class="ml-4 leading-tight">
-            <div>{{ $page.props.user.name }}</div>
-            <div class="text-sm text-gray-700">
-              {{ $page.props.user.email }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-span-6 sm:col-span-4">
-        <jet-label
-          for="name"
-          value="Team Name"
-        />
-        <jet-input
-          id="name"
-          v-model="form.name"
-          type="text"
-          class="block w-full mt-1"
-          autofocus
-        />
-        <jet-input-error
-          :message="form.errors.name"
-          class="mt-2"
-        />
-      </div>
+      <q-list>
+        <q-item-label
+          header
+          class="q-py-none"
+        >
+          Team Owner
+        </q-item-label>
+        <q-item>
+          <q-item-section avatar>
+            <q-avatar
+              size="30"
+            >
+              <q-img
+                :src="user.profile_photo_url"
+                :alt="user.name"
+              />
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ user.name }}</q-item-label>
+            <q-item-label caption>
+              {{ user.email }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+      <q-input
+        v-model="form.name"
+        outlined
+        :error-message="form.errors.name"
+        :error="!!form.errors.name"
+        label="Team name"
+      />
     </template>
 
     <template #actions>
-      <jet-button
-        :class="{ 'opacity-25': form.processing }"
+      <q-space />
+      <q-btn
+        color="primary"
+        flat
         :disabled="form.processing"
+        type="submit"
       >
         Create
-      </jet-button>
+      </q-btn>
     </template>
-  </jet-form-section>
+  </form-section>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import JetButton from '@/views/jetstream/Button.vue'
-import JetFormSection from '@/views/jetstream/FormSection.vue'
-import JetInput from '@/views/jetstream/Input.vue'
-import JetInputError from '@/views/jetstream/InputError.vue'
-import JetLabel from '@/views/jetstream/Label.vue'
-
-export default defineComponent({
-  components: {
-    JetButton,
-    JetFormSection,
-    JetInput,
-    JetInputError,
-    JetLabel
-  },
-
-  data () {
-    return {
-      form: this.$inertia.form({
-        name: ''
-      })
-    }
-  },
-
-  methods: {
-    createTeam () {
-      this.form.post(route('teams.store'), {
-        errorBag: 'createTeam',
-        preserveScroll: true
-      })
-    }
-  }
-})
-</script>
