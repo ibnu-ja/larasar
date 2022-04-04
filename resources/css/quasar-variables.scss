@@ -27,6 +27,13 @@
 @function shade($color, $percentage) {
     @return mix(#000, $color, $percentage);
 }
+// @function background-opacity($color, $opacity: 0.2) { 
+//      @return rgba($color, $opacity);
+// }
+
+// element {
+//     @include background-opacity(#333, 0.5);
+// }
 
 $primary: #1976d2;
 $secondary: #26a69a;
@@ -43,30 +50,38 @@ $primary-dark: #97c5f3;
 $secondary-dark: #9ce7de;
 $accent-dark: #d795e2;
 
-.bg-primary-active {
-    background-color: tint($primary, 85);
-}
+$bg-primary-active: rgba($primary, 0.18);
+$bg-secondary-active: rgba($secondary, 0.18);
+$bg-accent-active: rgba($accent, 0.18);
+$bg-positive-active: rgba($positive, 0.18);
+$bg-negative-active: rgba($negative, 0.18);
+$bg-info-active: rgba($info, 0.18);
+$bg-info-active: rgba($warning, 0.18);
 
-.bg-secondary-active {
-    background-color: tint($secondary, 85);
-}
+// .bg-primary-active {
+//     background-color: tint($primary, 85);
+// }
 
-.bg-accent-active {
-    background-color: tint($accent, 85);
-}
+// .bg-secondary-active {
+//     background-color: tint($secondary, 85);
+// }
 
-.bg-positive-active {
-    background-color: tint($positive, 85);
-}
-.bg-negative-active {
-    background-color: tint($negative, 85);
-}
-.bg-info-active {
-    background-color: tint($info, 85);
-}
-.bg-warning-active {
-    background-color: tint($warning, 85);
-}
+// .bg-accent-active {
+//     background-color: tint($accent, 85);
+// }
+
+// .bg-positive-active {
+//     background-color: tint($positive, 85);
+// }
+// .bg-negative-active {
+//     background-color: tint($negative, 85);
+// }
+// .bg-info-active {
+//     background-color: tint($info, 85);
+// }
+// .bg-warning-active {
+//     background-color: tint($warning, 85);
+// }
 
 .text-primary-dark {
     color: $primary-dark !important;
