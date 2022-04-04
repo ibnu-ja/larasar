@@ -11,7 +11,7 @@ const confirmingLogout = ref(false)
 const form = useForm({
   password: ''
 })
-const showP = ref(false)
+const showP = ref(true)
 // TODO focus on form
 function confirmLogout () {
   confirmingLogout.value = true

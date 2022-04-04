@@ -1,13 +1,5 @@
 
-<script lang="ts" setup>
-// import { defineComponent } from 'vue'
-// import JetActionSection from '@/views/jetstream/ActionSection.vue'
-// import JetButton from '@/views/jetstream/Button.vue'
-// import JetConfirmsPassword from '@/views/jetstream/ConfirmsPassword.vue'
-// import JetDangerButton from '@/views/jetstream/DangerButton.vue'
-// import JetSecondaryButton from '@/views/jetstream/SecondaryButton.vue'
-
-import { computed, inject, ref } from 'vue'
+<script lang="ts" setup>import { computed, inject, ref } from 'vue'
 import AppActionSection from '@/views/components/ActionSection.vue'
 import AppConfirmsPassword from '@/views/components/ConfirmsPassword.vue'
 import CodeBlock from '@/views/components/CodeBlock.vue'
@@ -60,76 +52,6 @@ function disableTwoFactorAuthentication () {
     onSuccess: () => (disabling.value = false)
   })
 }
-// export default defineComponent({
-//   components: {
-//     JetActionSection,
-//     JetButton,
-//     JetConfirmsPassword,
-//     JetDangerButton,
-//     JetSecondaryButton
-//   },
-
-//   data () {
-//     return {
-//       enabling: false,
-//       disabling: false,
-
-//       qrCode: null,
-//       recoveryCodes: []
-//     }
-//   },
-
-//   computed: {
-//     twoFactorEnabled () {
-//       return !this.enabling && this.$page.props.user.two_factor_enabled
-//     }
-//   },
-
-//   methods: {
-//     enableTwoFactorAuthentication () {
-//       this.enabling = true
-
-//       this.$inertia.post('/user/two-factor-authentication', {}, {
-//         preserveScroll: true,
-//         onSuccess: () => Promise.all([
-//           this.showQrCode(),
-//           this.showRecoveryCodes()
-//         ]),
-//         onFinish: () => (this.enabling = false)
-//       })
-//     },
-
-//     showQrCode () {
-//       return axios.get('/user/two-factor-qr-code')
-//         .then(response => {
-//           this.qrCode = response.data.svg
-//         })
-//     },
-
-//     showRecoveryCodes () {
-//       return axios.get('/user/two-factor-recovery-codes')
-//         .then(response => {
-//           this.recoveryCodes = response.data
-//         })
-//     },
-
-//     regenerateRecoveryCodes () {
-//       axios.post('/user/two-factor-recovery-codes')
-//         .then(response => {
-//           this.showRecoveryCodes()
-//         })
-//     },
-
-//     disableTwoFactorAuthentication () {
-//       this.disabling = true
-
-//       this.$inertia.delete('/user/two-factor-authentication', {
-//         preserveScroll: true,
-//         onSuccess: () => (this.disabling = false)
-//       })
-//     }
-//   }
-// })
 </script>
 
 <template>
