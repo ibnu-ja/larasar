@@ -50,13 +50,13 @@ $primary-dark: #97c5f3;
 $secondary-dark: #9ce7de;
 $accent-dark: #d795e2;
 
-$bg-primary-active: rgba($primary, 0.18);
-$bg-secondary-active: rgba($secondary, 0.18);
-$bg-accent-active: rgba($accent, 0.18);
-$bg-positive-active: rgba($positive, 0.18);
-$bg-negative-active: rgba($negative, 0.18);
-$bg-info-active: rgba($info, 0.18);
-$bg-info-active: rgba($warning, 0.18);
+$bg-primary-active: rgba($primary, 0.15);
+$bg-secondary-active: rgba($secondary, 0.15);
+$bg-accent-active: rgba($accent, 0.15);
+$bg-positive-active: rgba($positive, 0.15);
+$bg-negative-active: rgba($negative, 0.15);
+$bg-info-active: rgba($info, 0.15);
+$bg-info-active: rgba($warning, 0.15);
 
 // .bg-primary-active {
 //     background-color: tint($primary, 85);
