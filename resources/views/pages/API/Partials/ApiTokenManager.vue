@@ -76,16 +76,16 @@ function deleteApiToken () {
 
     <template #form>
       <!-- Token Name -->
-      <q-input
-        v-model="createApiTokenForm.name"
-        label="Name"
-        type="text"
-        outlined
-        autocomplete="name"
-        :error-message="createApiTokenForm.errors.name"
-      />
-      <!-- Token Permissions -->
-      <div class="">
+      <q-card-section class="q-gutter-md q-pt-none">
+        <q-input
+          v-model="createApiTokenForm.name"
+          label="Name"
+          type="text"
+          outlined
+          autocomplete="name"
+          :error-message="createApiTokenForm.errors.name"
+        />
+        <!-- Token Permissions -->
         <q-checkbox
           v-for="(permission, key) in props.availablePermissions"
           :key="key"
@@ -94,7 +94,7 @@ function deleteApiToken () {
           :val="permission"
           hide-details
         />
-      </div>
+      </q-card-section>
     </template>
     <template #actions>
       <transition

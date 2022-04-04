@@ -2,7 +2,6 @@
 import { computed, useSlots } from 'vue'
 const slots = useSlots()
 const hasActions = computed(() => !!slots.actions)
-const hasStatus = computed(() => !!slots.status)
 defineEmits(['submitted'])
 </script>
 
@@ -19,13 +18,14 @@ defineEmits(['submitted'])
       <div>
         <q-card class="q-pt-md">
           <form @submit.prevent="$emit('submitted')">
-            <q-card-section class="q-gutter-md q-pt-none">
+            <slot name="form" />
+            <!-- <q-card-section class="q-gutter-md q-pt-none">
               <h6 v-if="hasStatus">
                 <slot name="formTitle" />
               </h6>
 
               <slot name="form" />
-            </q-card-section>
+            </q-card-section> -->
 
             <q-separator />
 

@@ -4,7 +4,6 @@ import { computed, useSlots } from 'vue'
 const slots = useSlots()
 
 const hasActions = computed(() => !!slots.actions)
-const hasStatus = computed(() => !!slots.status)
 
 </script>
 
@@ -20,13 +19,13 @@ const hasStatus = computed(() => !!slots.status)
     <div class="col-12 col-md-8">
       <div>
         <q-card class="q-pt-md">
-          <q-card-section class="q-gutter-md q-pt-none">
+          <!-- <q-card-section class="q-gutter-md q-pt-none">
             <h6 v-if="hasStatus">
               <slot name="status" />
-            </h6>
+            </h6> -->
 
-            <slot name="content" />
-          </q-card-section>
+          <slot name="content" />
+          <!-- </q-card-section> -->
 
           <q-separator />
 

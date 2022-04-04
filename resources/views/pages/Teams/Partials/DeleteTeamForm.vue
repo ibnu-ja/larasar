@@ -28,9 +28,11 @@ function deleteTeam () {
     </template>
 
     <template #content>
-      <p>
-        Once a team is deleted, all of its resources and data will be permanently deleted. Before deleting this team, please download any data or information regarding this team that you wish to retain.
-      </p>
+      <q-card-section class="q-gutter-md q-pt-none">
+        <p>
+          Once a team is deleted, all of its resources and data will be permanently deleted. Before deleting this team, please download any data or information regarding this team that you wish to retain.
+        </p>
+      </q-card-section>
     </template>
     <template #actions>
       <q-btn

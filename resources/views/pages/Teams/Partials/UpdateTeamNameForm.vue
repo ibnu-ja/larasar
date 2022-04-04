@@ -54,14 +54,16 @@ function updateTeamName () {
           </q-item-section>
         </q-item>
       </q-list>
-      <q-input
-        v-model="form.name"
-        outlined
-        :error-message="form.errors.name"
-        :disabled="!permissions.canUpdateTeam"
-        :error="!!form.errors.name"
-        label="Team name"
-      />
+      <q-card-section>
+        <q-input
+          v-model="form.name"
+          outlined
+          :error-message="form.errors.name"
+          :disabled="!permissions.canUpdateTeam"
+          :error="!!form.errors.name"
+          label="Team name"
+        />
+      </q-card-section>
     </template>
 
     <template

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue'
-import AppActionSection from '@/views/components/ActionSection.vue'
+import ActionSection from '@/views/components/ActionSection.vue'
 import { useForm } from '@inertiajs/inertia-vue3'
 const route: any = inject('route')
 const confirmingUserDeletion = ref(false)
@@ -29,7 +29,7 @@ function closeModal () {
 </script>
 
 <template>
-  <app-action-section>
+  <action-section>
     <template #title>
       Delete Account
     </template>
@@ -39,11 +39,13 @@ function closeModal () {
     </template>
 
     <template #content>
-      <p>
-        Once your account is deleted, all of its resources and data will be
-        permanently deleted. Before deleting your account, please download any
-        data or information that you wish to retain.
-      </p>
+      <q-card-section class="q-gutter-md q-pt-none">
+        <p>
+          Once your account is deleted, all of its resources and data will be
+          permanently deleted. Before deleting your account, please download any
+          data or information that you wish to retain.
+        </p>
+      </q-card-section>
     </template>
     <template #actions>
       <!-- TODO add max width to dialog -->
@@ -108,5 +110,5 @@ function closeModal () {
         @click="confirmUserDeletion"
       />
     </template>
-  </app-action-section>
+  </action-section>
 </template>

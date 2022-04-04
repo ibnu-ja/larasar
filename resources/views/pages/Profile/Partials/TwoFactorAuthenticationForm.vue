@@ -65,63 +65,60 @@ function disableTwoFactorAuthentication () {
       Add additional security to your account using two factor authentication.
     </template>
 
-    <template
-      #status
-    >
-      <template
-        v-if="twoFactorEnabled"
-      >
-        You have enabled two factor authentication.
-      </template>
-      <template v-else>
-        You have not enabled two factor authentication.
-      </template>
-    </template>
-
     <template #content>
-      <p>
-        When two factor authentication is enabled, you will be prompted for a
-        secure, random token during authentication. You may retrieve this
-        token from your phone's Google Authenticator application.
-      </p>
+      <q-card-section class="q-gutter-md q-pt-none">
+        <h6
+          v-if="twoFactorEnabled"
+        >
+          You have enabled two factor authentication.
+        </h6>
+        <h6 v-else>
+          You have not enabled two factor authentication.
+        </h6>
+        <p>
+          When two factor authentication is enabled, you will be prompted for a
+          secure, random token during authentication. You may retrieve this
+          token from your phone's Google Authenticator application.
+        </p>
 
-      <div v-if="twoFactorEnabled">
-        <div v-if="qrCode">
-          <p>
-            Two factor authentication is now enabled. Scan the following QR
-            code using your phone's authenticator application.
-          </p>
+        <div v-if="twoFactorEnabled">
+          <div v-if="qrCode">
+            <p>
+              Two factor authentication is now enabled. Scan the following QR
+              code using your phone's authenticator application.
+            </p>
 
-          <q-card
-            flat
-            class="bg-white q-my-md q-pa-md"
-          >
-            <!-- eslint-disable vue/no-v-html -->
-            <div
-              class="text-center"
-              v-html="qrCode"
-            />
-          <!-- eslint-enable vue/no-v-html -->
-          </q-card>
+            <q-card
+              flat
+              class="bg-white q-my-md q-pa-md"
+            >
+              <!-- eslint-disable vue/no-v-html -->
+              <div
+                class="text-center"
+                v-html="qrCode"
+              />
+              <!-- eslint-enable vue/no-v-html -->
+            </q-card>
+          </div>
+
+          <div v-if="recoveryCodes.length > 0">
+            <p class="font-semibold">
+              Store these recovery codes in a secure password manager. They can
+              be used to recover access to your account if your two factor
+              authentication device is lost.
+            </p>
+            <q-card
+              bordered
+              flat
+            >
+              <code-block
+                lang="text"
+                :code="codes"
+              />
+            </q-card>
+          </div>
         </div>
-
-        <div v-if="recoveryCodes.length > 0">
-          <p class="font-semibold">
-            Store these recovery codes in a secure password manager. They can
-            be used to recover access to your account if your two factor
-            authentication device is lost.
-          </p>
-          <q-card
-            bordered
-            flat
-          >
-            <code-block
-              lang="text"
-              :code="codes"
-            />
-          </q-card>
-        </div>
-      </div>
+      </q-card-section>
     </template>
     <template #actions>
       <app-confirms-password

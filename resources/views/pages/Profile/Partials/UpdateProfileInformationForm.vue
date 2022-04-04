@@ -56,69 +56,71 @@ function clearPhotoFileInput () {
     </template>
 
     <template #form>
-      <!-- Profile Photo -->
-      <div
-        v-if="jetstream.managesProfilePhotos"
-        class="q-gutter-x-md"
-      >
-        <!-- Profile Photo File Input -->
-        <input
-          ref="photo"
-          style="display: none;"
-          type="file"
-          @change="updatePhotoPreview"
+      <q-card-section class="q-gutter-md q-pt-none">
+        <!-- Profile Photo -->
+        <div
+          v-if="jetstream.managesProfilePhotos"
+          class="q-gutter-x-md"
         >
-        <!-- New Profile Photo Preview -->
-        <!-- TODO enable transition -->
-        <q-avatar size="100px">
-          <q-img
-            v-if="photoPreview"
-            :src="photoPreview"
+          <!-- Profile Photo File Input -->
+          <input
+            ref="photo"
+            style="display: none;"
+            type="file"
+            @change="updatePhotoPreview"
+          >
+          <!-- New Profile Photo Preview -->
+          <!-- TODO enable transition -->
+          <q-avatar size="100px">
+            <q-img
+              v-if="photoPreview"
+              :src="photoPreview"
+            />
+            <q-img
+              v-else
+              :src="user.profile_photo_url"
+              :alt="user.name"
+            />
+          </q-avatar>
+
+          <q-btn
+            class="q-mx-sm"
+            outline
+            label="Select A New Photo"
+            color="info"
+            @click.prevent="selectNewPhoto"
           />
-          <q-img
-            v-else
-            :src="user.profile_photo_url"
-            :alt="user.name"
+          <q-btn
+            v-if="user.profile_photo_path"
+            class="q-mx-sm"
+            outline
+            label="Remove Photo"
+            color="negative"
+            @click.prevent="deletePhoto"
           />
-        </q-avatar>
+        </div>
 
-        <q-btn
-          class="q-mx-sm"
-          outline
-          label="Select A New Photo"
-          color="info"
-          @click.prevent="selectNewPhoto"
+        <!-- Name -->
+        <q-input
+          v-model="form.name"
+          label="Name"
+          type="text"
+          outlined
+          autocomplete="name"
+          :error="!!form.errors.name"
+          :error-message="form.errors.name"
         />
-        <q-btn
-          v-if="user.profile_photo_path"
-          class="q-mx-sm"
-          outline
-          label="Remove Photo"
-          color="negative"
-          @click.prevent="deletePhoto"
+
+        <!-- Email -->
+        <q-input
+          v-model="form.email"
+          label="Email"
+          type="email"
+          outlined
+          :error="!!form.errors.email"
+          :error-message="form.errors.email"
         />
-      </div>
-
-      <!-- Name -->
-      <q-input
-        v-model="form.name"
-        label="Name"
-        type="text"
-        outlined
-        autocomplete="name"
-        :error="!!form.errors.name"
-        :error-message="form.errors.name"
-      />
-
-      <!-- Email -->
-      <q-input
-        v-model="form.email"
-        label="Email"
-        type="email"
-        outlined
-        :error="!!form.errors.email"
-        :error-message="form.errors.email"
-      />
+      </q-card-section>
     </template>
 
     <template #actions>
