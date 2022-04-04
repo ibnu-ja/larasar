@@ -8,6 +8,7 @@ import { Inertia } from '@inertiajs/inertia'
 import { User } from '@/scripts/types/inertia-props'
 import axios from 'axios'
 import { usePage } from '@inertiajs/inertia-vue3'
+// import { useQuasar } from 'quasar'
 
 const enabling = ref(false)
 const disabling = ref(false)
@@ -91,10 +92,9 @@ function disableTwoFactorAuthentication () {
             code using your phone's authenticator application.
           </p>
 
-          <v-sheet
-            class="my-4 mx-auto pa-4"
-            color="white"
-            max-width="224"
+          <q-card
+            flat
+            class="bg-white q-my-md q-pa-md"
           >
             <!-- eslint-disable vue/no-v-html -->
             <div
@@ -102,7 +102,7 @@ function disableTwoFactorAuthentication () {
               v-html="qrCode"
             />
           <!-- eslint-enable vue/no-v-html -->
-          </v-sheet>
+          </q-card>
         </div>
 
         <div v-if="recoveryCodes.length > 0">
