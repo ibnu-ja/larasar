@@ -3,9 +3,8 @@ import { Invitation, Permission, Role, Team, User } from '@/scripts/types/inerti
 import { computed, inject, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/inertia-vue3'
 import ActionSection from '@/views/components/ActionSection.vue'
-import FormSection from '@/views/components/AppFormSection.vue'
+import FormSection from '@/views/components/FormSection.vue'
 import { Inertia } from '@inertiajs/inertia'
-// eslint-disable-next-line vue/require-prop-types
 const props = defineProps<{team: Team, availableRoles: Role[], userPermissions: Permission}>()
 const route: any = inject('route')
 const currentUser = computed(() => usePage().props.value.user as User)
@@ -274,32 +273,6 @@ function displayableRole (role: string) : string {
         </h6>
       </q-card-section>
       <q-list dense>
-        <!-- <v-item-group
-              v-model="updateRoleForm.role"
-              mandatory
-            >
-              <v-item
-                v-for="(role) in availableRoles"
-                :key="role.key"
-                v-slot="{ isSelected, toggle }"
-                :value="role.key"
-              >
-                <v-list-item
-                  @click="toggle"
-                >
-                  <v-list-item-avatar left>
-                    <v-checkbox
-                      :model-value="isSelected"
-                      hide-details
-                    />
-                  </v-list-item-avatar>
-                  <v-list-item-header>
-                    <v-list-item-title v-text="role.name" />
-                    <v-list-item-subtitle v-text="role.description" />
-                  </v-list-item-header>
-                </v-list-item>
-              </v-item>
-            </v-item-group> -->
         <q-list>
           <q-item
             v-for="(role) in availableRoles"

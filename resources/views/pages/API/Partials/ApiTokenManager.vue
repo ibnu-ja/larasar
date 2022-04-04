@@ -4,7 +4,7 @@ import { computed, inject, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/inertia-vue3'
 import ActionSection from '@/views/components/ActionSection.vue'
 import CodeBlock from '@/views/components/CodeBlock.vue'
-import FormSection from '@/views/components/AppFormSection.vue'
+import FormSection from '@/views/components/FormSection.vue'
 
 const props = defineProps<{tokens: Token[], availablePermissions: string[], defaultPermissions: string[] }>()
 const route : any = inject('route')
