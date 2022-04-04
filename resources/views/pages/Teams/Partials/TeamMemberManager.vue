@@ -81,24 +81,26 @@ function displayableRole (role: string) : string {
       </template>
 
       <template #form>
-        <p>
-          Please provide the email address of the person you would like to add to this team.
-        </p>
+        <q-card-section class="q-gutter-md q-pt-none q-pb-none">
+          <p>
+            Please provide the email address of the person you would like to add to this team.
+          </p>
 
-        <q-input
-          v-model="addTeamMemberForm.email"
-          :error-message="addTeamMemberForm.errors.email"
-          :error="!!addTeamMemberForm.errors.email"
-          outlined
-          label="Email"
-        />
+          <q-input
+            v-model="addTeamMemberForm.email"
+            :error-message="addTeamMemberForm.errors.email"
+            :error="!!addTeamMemberForm.errors.email"
+            outlined
+            label="Email"
+          />
 
-        <q-item-label
-          header
-          class="q-pa-sm q-px-md"
-        >
-          Role
-        </q-item-label>
+          <q-item-label
+            header
+            class="q-pa-sm q-px-md"
+          >
+            Role
+          </q-item-label>
+        </q-card-section>
         <q-list>
           <q-item
             v-for="(role) in availableRoles"
