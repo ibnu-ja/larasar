@@ -1,59 +1,36 @@
-<template>
-  <app-layout title="Team Settings">
-    <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Team Settings
-      </h2>
-    </template>
-
-    <div>
-      <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <update-team-name-form
-          :team="team"
-          :permissions="permissions"
-        />
-
-        <team-member-manager
-          class="mt-10 sm:mt-0"
-          :team="team"
-          :available-roles="availableRoles"
-          :user-permissions="permissions"
-        />
-
-        <template v-if="permissions.canDeleteTeam && ! team.personal_team">
-          <jet-section-border />
-
-          <delete-team-form
-            class="mt-10 sm:mt-0"
-            :team="team"
-          />
-        </template>
-      </div>
-    </div>
-  </app-layout>
-</template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import AppLayout from '@/views/layouts/AppLayout.vue'
-import DeleteTeamForm from '@/views/pages/Teams/Partials/DeleteTeamForm.vue'
-import JetSectionBorder from '@/views/jetstream/SectionBorder.vue'
-import TeamMemberManager from '@/views/pages/Teams/Partials/TeamMemberManager.vue'
-import UpdateTeamNameForm from '@/views/pages/Teams/Partials/UpdateTeamNameForm.vue'
-
-export default defineComponent({
-
-  components: {
-    AppLayout,
-    DeleteTeamForm,
-    JetSectionBorder,
-    TeamMemberManager,
-    UpdateTeamNameForm
-  },
-  props: [
-    'team',
-    'availableRoles',
-    'permissions'
-  ]
-})
+<script lang="ts" setup>
+import { Permission, Role, Team } from '@/scripts/types/inertia-props'
+import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
+import DeleteTeamForm from './Partials/DeleteTeamForm.vue'
+import TeamMemberManager from './Partials/TeamMemberManager.vue'
+import UpdateTeamNameForm from './Partials/UpdateTeamNameForm.vue'
+defineProps<{team: Team, availableRoles: Role[], permissions: Permission}>()
 </script>
+
+<template>
+  <dashboard-layout title="Team Settings">
+    <q-page
+      padding
+      class="fit column content-stretch"
+    >
+      <update-team-name-form
+        :team="team"
+        :permissions="permissions"
+      />
+
+      <q-separator class="q-my-md" />
+
+      <team-member-manager
+        :team="team"
+        :available-roles="availableRoles"
+        :user-permissions="permissions"
+      />
+
+      <template v-if="permissions.canDeleteTeam && ! team.personal_team">
+        <q-separator class="q-my-md" />
+
+        <delete-team-form :team="team" />
+      </template>
+    </q-page>
+  </dashboard-layout>
+</template>

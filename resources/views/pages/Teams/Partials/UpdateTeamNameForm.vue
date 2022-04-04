@@ -1,113 +1,92 @@
+<script lang="ts" setup>
+import FormSection from '@/views/components/AppFormSection.vue'
+import { inject } from 'vue'
+import { useForm } from '@inertiajs/inertia-vue3'
+const route: any = inject('route')
+// eslint-disable-next-line vue/require-prop-types
+const props = defineProps(['team', 'permissions'])
+const form = useForm({
+  name: props.team.name
+})
+
+function updateTeamName () {
+  form.put(route('teams.update', props.team), {
+    errorBag: 'updateTeamName',
+    preserveScroll: true
+  })
+}
+</script>
+
 <template>
-  <jet-form-section @submitted="updateTeamName">
+  <form-section @submitted="updateTeamName">
     <template #title>
-      Team Name
+      Team Details
     </template>
 
     <template #description>
-      The team's name and owner information.
+      Create a new team to collaborate with others on projects.
     </template>
 
     <template #form>
-      <!-- Team Owner Information -->
-      <div class="col-span-6">
-        <jet-label value="Team Owner" />
-
-        <div class="flex items-center mt-2">
-          <img
-            class="w-12 h-12 rounded-full object-cover"
-            :src="team.owner.profile_photo_url"
-            :alt="team.owner.name"
-          >
-
-          <div class="ml-4 leading-tight">
-            <div>{{ team.owner.name }}</div>
-            <div class="text-gray-700 text-sm">
+      <q-list>
+        <q-item-label
+          header
+          class="q-py-none"
+        >
+          Team Owner
+        </q-item-label>
+        <q-item>
+          <q-item-section avatar>
+            <q-avatar
+              size="30"
+            >
+              <q-img
+                :src="team.owner.profile_photo_url"
+                :alt="team.owner.name"
+              />
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ team.owner.name }}</q-item-label>
+            <q-item-label caption>
               {{ team.owner.email }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Team Name -->
-      <div class="col-span-6 sm:col-span-4">
-        <jet-label
-          for="name"
-          value="Team Name"
-        />
-
-        <jet-input
-          id="name"
-          v-model="form.name"
-          type="text"
-          class="mt-1 block w-full"
-          :disabled="! permissions.canUpdateTeam"
-        />
-
-        <jet-input-error
-          :message="form.errors.name"
-          class="mt-2"
-        />
-      </div>
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+      <q-input
+        v-model="form.name"
+        outlined
+        :error-message="form.errors.name"
+        :disabled="!permissions.canUpdateTeam"
+        :error="!!form.errors.name"
+        label="Team name"
+      />
     </template>
 
     <template
       v-if="permissions.canUpdateTeam"
       #actions
     >
-      <jet-action-message
-        :on="form.recentlySuccessful"
-        class="mr-3"
+      <transition
+        enter-active-class="animated fadeInLeft"
+        leave-active-class="animated fadeOutRight"
       >
-        Saved.
-      </jet-action-message>
-
-      <jet-button
-        :class="{ 'opacity-25': form.processing }"
+        <div
+          v-show="form.recentlySuccessful"
+        >
+          Saved.
+        </div>
+      </transition>
+      <q-space />
+      <q-btn
+        color="primary"
+        flat
         :disabled="form.processing"
+        type="submit"
       >
         Save
-      </jet-button>
+      </q-btn>
     </template>
-  </jet-form-section>
+  </form-section>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import JetActionMessage from '@/views/jetstream/ActionMessage.vue'
-import JetButton from '@/views/jetstream/Button.vue'
-import JetFormSection from '@/views/jetstream/FormSection.vue'
-import JetInput from '@/views/jetstream/Input.vue'
-import JetInputError from '@/views/jetstream/InputError.vue'
-import JetLabel from '@/views/jetstream/Label.vue'
-
-export default defineComponent({
-  components: {
-    JetActionMessage,
-    JetButton,
-    JetFormSection,
-    JetInput,
-    JetInputError,
-    JetLabel
-  },
-
-  props: ['team', 'permissions'],
-
-  data () {
-    return {
-      form: this.$inertia.form({
-        name: this.team.name
-      })
-    }
-  },
-
-  methods: {
-    updateTeamName () {
-      this.form.put(route('teams.update', this.team), {
-        errorBag: 'updateTeamName',
-        preserveScroll: true
-      })
-    }
-  }
-})
-</script>
