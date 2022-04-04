@@ -136,6 +136,30 @@ defineProps<{ title: string }>()
             >
               Manage Team
             </q-item-label>
+
+            <inertia-link
+              class="nostyle"
+              :href="route('teams.show', user.current_team)"
+            >
+              <q-item
+                link
+                :active="route().current('teams.show')"
+                active-class="bg-primary-active"
+                :class="{ 'bg-primary-active': route().current('teams.show') }"
+                clickable
+                active-color="primary"
+              >
+                <q-item-section avatar>
+                  <q-icon name="mdi-account-multiple-outline" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>
+                    Team Settings
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </inertia-link>
+
             <inertia-link
               class="nostyle"
               :href="route('teams.create')"
