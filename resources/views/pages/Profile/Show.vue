@@ -43,7 +43,7 @@ const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
       <template v-if="jetstream.hasAccountDeletionFeatures">
         <q-separator class="q-my-md" />
 
-        <delete-user-form class="mt-10 mt-sm-0" />
+        <delete-user-form />
       </template>
     </q-page>
   </dashboard-layout>
