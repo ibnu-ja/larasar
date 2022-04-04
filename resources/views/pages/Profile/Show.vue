@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Jetstream, Session, User } from '@/scripts/types/inertia-props'
 import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
-// import DeleteUserForm from './Partials/DeleteUserForm.vue'
+import DeleteUserForm from './Partials/DeleteUserForm.vue'
 import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
 import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
@@ -40,17 +40,11 @@ const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
       <logout-other-browser-sessions-form
         :sessions="sessions"
       />
+      <template v-if="jetstream.hasAccountDeletionFeatures">
+        <q-separator class="q-my-md" />
+
+        <delete-user-form class="mt-10 mt-sm-0" />
+      </template>
     </q-page>
-
-    <!-- <logout-other-browser-sessions-form
-          :sessions="sessions"
-          class="mt-10 mt-sm-0"
-        /> -->
-
-    <!-- <template v-if="jetstream.hasAccountDeletionFeatures">
-          <v-divider class="my-8" />
-
-          <delete-user-form class="mt-10 mt-sm-0" />
-        </template> -->
   </dashboard-layout>
 </template>
