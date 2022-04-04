@@ -53,8 +53,6 @@ function submit () {
             <h6>
               Two Factor authentication
             </h6>
-            <!-- <validation-errors class="mb-4" /> -->
-
             <template v-if="!recovery">
               <p>
                 Please confirm access to your account by entering the authentication code provided by your authenticator application.

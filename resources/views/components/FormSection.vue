@@ -19,13 +19,6 @@ defineEmits(['submitted'])
         <q-card class="q-pt-md">
           <form @submit.prevent="$emit('submitted')">
             <slot name="form" />
-            <!-- <q-card-section class="q-gutter-md q-pt-none">
-              <h6 v-if="hasStatus">
-                <slot name="formTitle" />
-              </h6>
-
-              <slot name="form" />
-            </q-card-section> -->
             <template v-if="hasActions">
               <q-separator />
 

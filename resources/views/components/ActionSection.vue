@@ -19,11 +19,6 @@ const hasActions = computed(() => !!slots.actions)
     <div class="col-12 col-md-8">
       <div>
         <q-card class="q-pt-md">
-          <!-- <q-card-section class="q-gutter-md q-pt-none">
-            <h6 v-if="hasStatus">
-              <slot name="status" />
-            </h6> -->
-
           <slot name="content" />
           <!-- </q-card-section> -->
           <template v-if="hasActions">
