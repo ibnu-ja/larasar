@@ -2,7 +2,7 @@
 import { Permission, Role, Team } from '@/scripts/types/inertia-props'
 import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
 // import DeleteTeamForm from './Partials/DeleteTeamForm.vue'
-// import TeamMemberManager from './Partials/TeamMemberManager.vue'
+import TeamMemberManager from './Partials/TeamMemberManager.vue'
 import UpdateTeamNameForm from './Partials/UpdateTeamNameForm.vue'
 defineProps<{team: Team, availableRoles: Role[], permissions: Permission}>()
 </script>
@@ -19,21 +19,17 @@ defineProps<{team: Team, availableRoles: Role[], permissions: Permission}>()
       />
 
       <q-separator class="q-my-md" />
+
+      <team-member-manager
+        :team="team"
+        :available-roles="availableRoles"
+        :user-permissions="permissions"
+      />
     </q-page>
   </dashboard-layout>
-  <!-- <app-layout title="Team Settings">
-    <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Team Settings
-      </h2>
-    </template>
-
+  <!--
     <div>
       <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <update-team-name-form
-          :team="team"
-          :permissions="permissions"
-        />
 
         <team-member-manager
           class="mt-10 sm:mt-0"
@@ -51,6 +47,5 @@ defineProps<{team: Team, availableRoles: Role[], permissions: Permission}>()
           />
         </template>
       </div>
-    </div>
-  </app-layout> -->
+    </div> -->
 </template>

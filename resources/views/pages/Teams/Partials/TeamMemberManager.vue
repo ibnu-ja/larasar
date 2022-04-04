@@ -1,468 +1,413 @@
+<script lang="ts" setup>
+import { Permission, Role, Team, User } from '@/scripts/types/inertia-props'
+import { computed, inject, ref } from 'vue'
+import { useForm, usePage } from '@inertiajs/inertia-vue3'
+import ActionSection from '@/views/components/ActionSection.vue'
+import FormSection from '@/views/components/AppFormSection.vue'
+import { Inertia } from '@inertiajs/inertia'
+// eslint-disable-next-line vue/require-prop-types
+const props = defineProps<{team: Team, availableRoles: Role[], userPermissions: Permission}>()
+const route: any = inject('route')
+const currentUser = computed(() => usePage().props.value.user as User)
+const addTeamMemberForm = useForm({
+  email: '',
+  role: props.availableRoles[0].key
+})
+const updateRoleForm = useForm({
+  role: props.availableRoles[0].key
+})
+const leaveTeamForm = useForm({})
+const removeTeamMemberForm = useForm({})
+const currentlyManagingRole = ref(false)
+const managingRoleFor = ref(null)
+const confirmingLeavingTeam = ref(false)
+const teamMemberBeingRemoved = ref(false)
+const confirmingRemovingTeamMember = ref(false)
+function addTeamMember () {
+  addTeamMemberForm.post(route('team-members.store', props.team), {
+    errorBag: 'addTeamMember',
+    preserveScroll: true,
+    onSuccess: () => addTeamMemberForm.reset()
+  })
+}
+function cancelTeamInvitation (invitation) {
+  Inertia.delete(route('team-invitations.destroy', invitation), {
+    preserveScroll: true
+  })
+}
+function manageRole (teamMember) {
+  managingRoleFor.value = teamMember
+  updateRoleForm.role = teamMember.membership.role
+  currentlyManagingRole.value = true
+}
+function updateRole () {
+  updateRoleForm.put(route('team-members.update', [props.team, managingRoleFor.value]), {
+    preserveScroll: true,
+    onSuccess: () => (currentlyManagingRole.value = false)
+  })
+}
+function confirmLeavingTeam () {
+  confirmingLeavingTeam.value = true
+}
+function leaveTeam () {
+  leaveTeamForm.delete(route('team-members.destroy', [props.team, currentUser]))
+}
+function confirmTeamMemberRemoval (teamMember) {
+  confirmingRemovingTeamMember.value = true
+  teamMemberBeingRemoved.value = teamMember
+}
+function removeTeamMember () {
+  removeTeamMemberForm.delete(route('team-members.destroy', [props.team, teamMemberBeingRemoved.value]), {
+    errorBag: 'removeTeamMember',
+    preserveScroll: true,
+    preserveState: true,
+    onSuccess: () => (teamMemberBeingRemoved.value = false)
+  })
+}
+function displayableRole (role) {
+  return props.availableRoles.find(r => r.key === role)?.name
+}
+
+const check1 = ref(false)
+</script>
+
 <template>
-  <div>
-    <div v-if="userPermissions.canAddTeamMembers">
-      <jet-section-border />
+  <div v-if="userPermissions.canAddTeamMembers">
+    <!-- Add Team Member -->
+    <form-section @submitted="addTeamMember">
+      <template #title>
+        Add Team Member
+      </template>
 
-      <!-- Add Team Member -->
-      <jet-form-section @submitted="addTeamMember">
-        <template #title>
-          Add Team Member
-        </template>
+      <template #description>
+        Add a new team member to your team, allowing them to collaborate with you.
+      </template>
 
-        <template #description>
-          Add a new team member to your team, allowing them to collaborate with you.
-        </template>
+      <template #form>
+        <p>
+          Please provide the email address of the person you would like to add to this team.
+        </p>
 
-        <template #form>
-          <div class="col-span-6">
-            <div class="max-w-xl text-sm text-gray-600">
-              Please provide the email address of the person you would like to add to this team.
-            </div>
-          </div>
+        <q-input
+          v-model="addTeamMemberForm.email"
+          :error-message="addTeamMemberForm.errors.email"
+          :error="!!addTeamMemberForm.errors.email"
+          outlined
+          label="Email"
+        />
 
-          <!-- Member Email -->
-          <div class="col-span-6 sm:col-span-4">
-            <jet-label
-              for="email"
-              value="Email"
-            />
-            <jet-input
-              id="email"
-              v-model="addTeamMemberForm.email"
-              type="email"
-              class="mt-1 block w-full"
-            />
-            <jet-input-error
-              :message="addTeamMemberForm.errors.email"
-              class="mt-2"
-            />
-          </div>
-
-          <!-- Role -->
-          <div
-            v-if="availableRoles.length > 0"
-            class="col-span-6 lg:col-span-4"
+        <q-item-label
+          header
+          class="q-pa-none"
+        >
+          Role
+        </q-item-label>
+        <q-list>
+          <q-item
+            v-for="(role) in availableRoles"
+            :key="role.key"
+            v-ripple
+            tag="label"
           >
-            <jet-label
-              for="roles"
-              value="Role"
-            />
-            <jet-input-error
-              :message="addTeamMemberForm.errors.role"
-              class="mt-2"
-            />
+            <q-item-section
+              side
+              top
+            >
+              <q-radio
+                v-model="addTeamMemberForm.role"
+                :val="role.key"
+              />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ role.name }}</q-item-label>
+              <q-item-label caption>
+                {{ role.description }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </template>
 
-            <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
-              <button
-                v-for="(role, i) in availableRoles"
-                :key="role.key"
-                type="button"
-                class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                :class="{'border-t border-gray-200 rounded-t-none': i > 0, 'rounded-b-none': i != Object.keys(availableRoles).length - 1}"
-                @click="addTeamMemberForm.role = role.key"
+      <template #actions>
+        <transition
+          enter-active-class="animated fadeInLeft"
+          leave-active-class="animated fadeOutRight"
+        >
+          <div v-show="addTeamMemberForm.recentlySuccessful">
+            Saved.
+          </div>
+        </transition>
+        <q-space />
+
+        <q-btn
+          flat
+          color="primary"
+          type="submit"
+          :disabled="addTeamMemberForm.processing"
+        >
+          Add
+        </q-btn>
+      </template>
+    </form-section>
+  </div>
+
+  <div v-if="team.team_invitations.length > 0 && userPermissions.canAddTeamMembers">
+    <q-separator class="q-my-md" />
+
+    <!-- Team Member Invitations -->
+    <action-section>
+      <template #title>
+        Pending Team Invitations
+      </template>
+
+      <template #description>
+        These people have been invited to your team and have been sent an invitation email. They may join the team by accepting the email invitation.
+      </template>
+
+      <!-- Pending Team Member Invitation List -->
+      <template #content>
+        <q-list dense>
+          <q-item
+            v-for="invitation in team.team_invitations"
+            :key="invitation.id"
+          >
+            <q-item-section>
+              <q-item-label v-text="invitation.email" />
+            </q-item-section>
+            <q-item-section
+              top
+              side
+            >
+              <q-btn
+                v-if="userPermissions.canRemoveTeamMembers"
+                color="negative"
+                flat
+                @click="cancelTeamInvitation(invitation)"
               >
-                <div :class="{'opacity-50': addTeamMemberForm.role && addTeamMemberForm.role != role.key}">
-                  <!-- Role Name -->
-                  <div class="flex items-center">
-                    <div
-                      class="text-sm text-gray-600"
-                      :class="{'font-semibold': addTeamMemberForm.role == role.key}"
-                    >
-                      {{ role.name }}
-                    </div>
+                Cancel
+              </q-btn>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </template>
+    </action-section>
+  </div>
 
-                    <svg
-                      v-if="addTeamMemberForm.role == role.key"
-                      class="ml-2 h-5 w-5 text-green-400"
-                      fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    ><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  </div>
+  <div v-if="team.users.length > 0">
+    <q-separator class="q-my-md" />
 
-                  <!-- Role Description -->
-                  <div class="mt-2 text-xs text-gray-600 text-left">
-                    {{ role.description }}
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
-        </template>
+    <!-- Manage Team Members -->
+    <action-section class="mt-10 sm:mt-0">
+      <template #title>
+        Team Members
+      </template>
 
-        <template #actions>
-          <jet-action-message
-            :on="addTeamMemberForm.recentlySuccessful"
-            class="mr-3"
+      <template #description>
+        All of the people that are part of this team.
+      </template>
+
+      <!-- Team Member List -->
+      <template #content>
+        <q-list dense>
+          <q-item
+            v-for="user in team.users"
+            :key="user.id"
           >
-            Added.
-          </jet-action-message>
-
-          <jet-button
-            :class="{ 'opacity-25': addTeamMemberForm.processing }"
-            :disabled="addTeamMemberForm.processing"
-          >
-            Add
-          </jet-button>
-        </template>
-      </jet-form-section>
-    </div>
-
-    <div v-if="team.team_invitations.length > 0 && userPermissions.canAddTeamMembers">
-      <jet-section-border />
-
-      <!-- Team Member Invitations -->
-      <jet-action-section class="mt-10 sm:mt-0">
-        <template #title>
-          Pending Team Invitations
-        </template>
-
-        <template #description>
-          These people have been invited to your team and have been sent an invitation email. They may join the team by accepting the email invitation.
-        </template>
-
-        <!-- Pending Team Member Invitation List -->
-        <template #content>
-          <div class="space-y-6">
-            <div
-              v-for="invitation in team.team_invitations"
-              :key="invitation.id"
-              class="flex items-center justify-between"
-            >
-              <div class="text-gray-600">
-                {{ invitation.email }}
-              </div>
-
-              <div class="flex items-center">
-                <!-- Cancel Team Invitation -->
-                <button
-                  v-if="userPermissions.canRemoveTeamMembers"
-                  class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
-                  @click="cancelTeamInvitation(invitation)"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </template>
-      </jet-action-section>
-    </div>
-
-    <div v-if="team.users.length > 0">
-      <jet-section-border />
-
-      <!-- Manage Team Members -->
-      <jet-action-section class="mt-10 sm:mt-0">
-        <template #title>
-          Team Members
-        </template>
-
-        <template #description>
-          All of the people that are part of this team.
-        </template>
-
-        <!-- Team Member List -->
-        <template #content>
-          <div class="space-y-6">
-            <div
-              v-for="user in team.users"
-              :key="user.id"
-              class="flex items-center justify-between"
-            >
-              <div class="flex items-center">
-                <img
-                  class="w-8 h-8 rounded-full"
+            <q-item-section avatar>
+              <q-avatar>
+                <q-img
                   :src="user.profile_photo_url"
                   :alt="user.name"
-                >
-                <div class="ml-4">
-                  {{ user.name }}
-                </div>
-              </div>
-
-              <div class="flex items-center">
-                <!-- Manage Team Member Role -->
-                <button
+                />
+              </q-avatar>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label v-text="user.name" />
+            </q-item-section>
+            <q-item-section
+              side
+              top
+            >
+              <div>
+                <q-btn
                   v-if="userPermissions.canAddTeamMembers && availableRoles.length"
-                  class="ml-2 text-sm text-gray-400 underline"
+                  flat
                   @click="manageRole(user)"
-                >
-                  {{ displayableRole(user.membership.role) }}
-                </button>
-
-                <div
+                  v-text="displayableRole(user.membership?.role)"
+                />
+                <template
                   v-else-if="availableRoles.length"
-                  class="ml-2 text-sm text-gray-400"
                 >
-                  {{ displayableRole(user.membership.role) }}
-                </div>
-
-                <!-- Leave Team -->
-                <button
-                  v-if="$page.props.user.id === user.id"
-                  class="cursor-pointer ml-6 text-sm text-red-500"
+                  {{ displayableRole(user.membership?.role) }}
+                </template>
+                <q-btn
+                  v-if="currentUser.id === user.id"
+                  class="d-none d-sm-flex mx-1 text-capitalize"
+                  color="negative"
+                  flat
                   @click="confirmLeavingTeam"
                 >
                   Leave
-                </button>
-
-                <!-- Remove Team Member -->
-                <button
+                </q-btn>
+                <q-btn
                   v-if="userPermissions.canRemoveTeamMembers"
-                  class="cursor-pointer ml-6 text-sm text-red-500"
+                  color="negative"
+                  flat
                   @click="confirmTeamMemberRemoval(user)"
                 >
                   Remove
-                </button>
+                </q-btn>
               </div>
-            </div>
-          </div>
-        </template>
-      </jet-action-section>
-    </div>
-
-    <!-- Role Management Modal -->
-    <jet-dialog-modal
-      :show="currentlyManagingRole"
-      @close="currentlyManagingRole = false"
-    >
-      <template #title>
-        Manage Role
+            </q-item-section>
+          </q-item>
+        </q-list>
       </template>
+    </action-section>
+  </div>
 
-      <template #content>
-        <div v-if="managingRoleFor">
-          <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
-            <button
-              v-for="(role, i) in availableRoles"
-              :key="role.key"
-              type="button"
-              class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-              :class="{'border-t border-gray-200 rounded-t-none': i > 0, 'rounded-b-none': i !== Object.keys(availableRoles).length - 1}"
-              @click="updateRoleForm.role = role.key"
+  <!-- Role Management Modal -->
+  <q-dialog
+    v-model="currentlyManagingRole"
+  >
+    <q-card>
+      <q-card-section>
+        <h6>
+          Manage Role
+        </h6>
+      </q-card-section>
+      <q-list dense>
+        <!-- <v-item-group
+              v-model="updateRoleForm.role"
+              mandatory
             >
-              <div :class="{'opacity-50': updateRoleForm.role && updateRoleForm.role !== role.key}">
-                <!-- Role Name -->
-                <div class="flex items-center">
-                  <div
-                    class="text-sm text-gray-600"
-                    :class="{'font-semibold': updateRoleForm.role === role.key}"
-                  >
-                    {{ role.name }}
-                  </div>
-
-                  <svg
-                    v-if="updateRoleForm.role === role.key"
-                    class="ml-2 h-5 w-5 text-green-400"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  ><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                </div>
-
-                <!-- Role Description -->
-                <div class="mt-2 text-xs text-gray-600">
-                  {{ role.description }}
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-      </template>
-
-      <template #footer>
-        <jet-secondary-button @click="currentlyManagingRole = false">
+              <v-item
+                v-for="(role) in availableRoles"
+                :key="role.key"
+                v-slot="{ isSelected, toggle }"
+                :value="role.key"
+              >
+                <v-list-item
+                  @click="toggle"
+                >
+                  <v-list-item-avatar left>
+                    <v-checkbox
+                      :model-value="isSelected"
+                      hide-details
+                    />
+                  </v-list-item-avatar>
+                  <v-list-item-header>
+                    <v-list-item-title v-text="role.name" />
+                    <v-list-item-subtitle v-text="role.description" />
+                  </v-list-item-header>
+                </v-list-item>
+              </v-item>
+            </v-item-group> -->
+        <q-list>
+          <q-item
+            v-for="(role) in availableRoles"
+            :key="role.key"
+            v-ripple
+            tag="label"
+          >
+            <q-item-section
+              side
+              top
+            >
+              <q-radio
+                v-model="updateRoleForm.role"
+                :val="role.key"
+              />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ role.name }}</q-item-label>
+              <q-item-label caption>
+                {{ role.description }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-list>
+      <q-card-actions>
+        <q-space />
+        <q-btn
+          flat
+          @click="currentlyManagingRole = false"
+        >
           Cancel
-        </jet-secondary-button>
-
-        <jet-button
-          class="ml-3"
-          :class="{ 'opacity-25': updateRoleForm.processing }"
+        </q-btn>
+        <q-btn
+          color="primary"
+          flat
           :disabled="updateRoleForm.processing"
           @click="updateRole"
         >
           Save
-        </jet-button>
-      </template>
-    </jet-dialog-modal>
-
-    <!-- Leave Team Confirmation Modal -->
-    <jet-confirmation-modal
-      :show="confirmingLeavingTeam"
-      @close="confirmingLeavingTeam = false"
-    >
-      <template #title>
-        Leave Team
-      </template>
-
-      <template #content>
-        Are you sure you would like to leave this team?
-      </template>
-
-      <template #footer>
-        <jet-secondary-button @click="confirmingLeavingTeam = false">
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+  <!-- Leave Team Confirmation Modal -->
+  <q-dialog
+    v-model="confirmingLeavingTeam"
+  >
+    <q-card>
+      <q-card-section>
+        <h6>
+          Leave Team
+        </h6>
+        <p>
+          Are you sure you would like to leave this team?
+        </p>
+      </q-card-section>
+      <q-card-actions>
+        <q-space />
+        <q-btn
+          flat
+          @click="confirmingLeavingTeam = false"
+        >
           Cancel
-        </jet-secondary-button>
-
-        <jet-danger-button
-          class="ml-3"
-          :class="{ 'opacity-25': leaveTeamForm.processing }"
+        </q-btn>
+        <q-btn
+          color="negative"
+          flat
           :disabled="leaveTeamForm.processing"
           @click="leaveTeam"
         >
           Leave
-        </jet-danger-button>
-      </template>
-    </jet-confirmation-modal>
-
-    <!-- Remove Team Member Confirmation Modal -->
-    <jet-confirmation-modal
-      :show="teamMemberBeingRemoved"
-      @close="teamMemberBeingRemoved = null"
-    >
-      <template #title>
-        Remove Team Member
-      </template>
-
-      <template #content>
-        Are you sure you would like to remove this person from the team?
-      </template>
-
-      <template #footer>
-        <jet-secondary-button @click="teamMemberBeingRemoved = null">
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+  <!-- Remove Team Member Confirmation Modal -->
+  <q-dialog
+    v-model="confirmingRemovingTeamMember"
+  >
+    <q-card>
+      <q-card-section>
+        <h6>
+          Remove Team Member
+        </h6>
+        <p>
+          Are you sure you would like to remove this person from the team?
+        </p>
+      </q-card-section>
+      <q-card-actions>
+        <q-space />
+        <q-btn
+          flat
+          @click="confirmingRemovingTeamMember = false"
+        >
           Cancel
-        </jet-secondary-button>
-
-        <jet-danger-button
-          class="ml-3"
-          :class="{ 'opacity-25': removeTeamMemberForm.processing }"
+        </q-btn>
+        <q-btn
+          color="negative"
+          flat
           :disabled="removeTeamMemberForm.processing"
           @click="removeTeamMember"
         >
           Remove
-        </jet-danger-button>
-      </template>
-    </jet-confirmation-modal>
-  </div>
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import JetActionMessage from '@/views/jetstream/ActionMessage.vue'
-import JetActionSection from '@/views/jetstream/ActionSection.vue'
-import JetButton from '@/views/jetstream/Button.vue'
-import JetConfirmationModal from '@/views/jetstream/ConfirmationModal.vue'
-import JetDangerButton from '@/views/jetstream/DangerButton.vue'
-import JetDialogModal from '@/views/jetstream/DialogModal.vue'
-import JetFormSection from '@/views/jetstream/FormSection.vue'
-import JetInput from '@/views/jetstream/Input.vue'
-import JetInputError from '@/views/jetstream/InputError.vue'
-import JetLabel from '@/views/jetstream/Label.vue'
-import JetSecondaryButton from '@/views/jetstream/SecondaryButton.vue'
-import JetSectionBorder from '@/views/jetstream/SectionBorder.vue'
-
-export default defineComponent({
-  components: {
-    JetActionMessage,
-    JetActionSection,
-    JetButton,
-    JetConfirmationModal,
-    JetDangerButton,
-    JetDialogModal,
-    JetFormSection,
-    JetInput,
-    JetInputError,
-    JetLabel,
-    JetSecondaryButton,
-    JetSectionBorder
-  },
-
-  props: [
-    'team',
-    'availableRoles',
-    'userPermissions'
-  ],
-
-  data () {
-    return {
-      addTeamMemberForm: this.$inertia.form({
-        email: '',
-        role: null
-      }),
-
-      updateRoleForm: this.$inertia.form({
-        role: null
-      }),
-
-      leaveTeamForm: this.$inertia.form(),
-      removeTeamMemberForm: this.$inertia.form(),
-
-      currentlyManagingRole: false,
-      managingRoleFor: null,
-      confirmingLeavingTeam: false,
-      teamMemberBeingRemoved: null
-    }
-  },
-
-  methods: {
-    addTeamMember () {
-      this.addTeamMemberForm.post(route('team-members.store', this.team), {
-        errorBag: 'addTeamMember',
-        preserveScroll: true,
-        onSuccess: () => this.addTeamMemberForm.reset()
-      })
-    },
-
-    cancelTeamInvitation (invitation) {
-      this.$inertia.delete(route('team-invitations.destroy', invitation), {
-        preserveScroll: true
-      })
-    },
-
-    manageRole (teamMember) {
-      this.managingRoleFor = teamMember
-      this.updateRoleForm.role = teamMember.membership.role
-      this.currentlyManagingRole = true
-    },
-
-    updateRole () {
-      this.updateRoleForm.put(route('team-members.update', [this.team, this.managingRoleFor]), {
-        preserveScroll: true,
-        onSuccess: () => (this.currentlyManagingRole = false)
-      })
-    },
-
-    confirmLeavingTeam () {
-      this.confirmingLeavingTeam = true
-    },
-
-    leaveTeam () {
-      this.leaveTeamForm.delete(route('team-members.destroy', [this.team, this.$page.props.user]))
-    },
-
-    confirmTeamMemberRemoval (teamMember) {
-      this.teamMemberBeingRemoved = teamMember
-    },
-
-    removeTeamMember () {
-      this.removeTeamMemberForm.delete(route('team-members.destroy', [this.team, this.teamMemberBeingRemoved]), {
-        errorBag: 'removeTeamMember',
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => (this.teamMemberBeingRemoved = null)
-      })
-    },
-
-    displayableRole (role) {
-      return this.availableRoles.find(r => r.key === role).name
-    }
-  }
-})
-</script>
