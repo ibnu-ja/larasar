@@ -26,14 +26,13 @@ const hasActions = computed(() => !!slots.actions)
 
           <slot name="content" />
           <!-- </q-card-section> -->
+          <template v-if="hasActions">
+            <q-separator />
 
-          <q-separator />
-
-          <q-card-actions
-            v-if="hasActions"
-          >
-            <slot name="actions" />
-          </q-card-actions>
+            <q-card-actions>
+              <slot name="actions" />
+            </q-card-actions>
+          </template>
         </q-card>
       </div>
     </div>
