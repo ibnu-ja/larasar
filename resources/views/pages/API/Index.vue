@@ -1,38 +1,21 @@
-<template>
-  <app-layout title="API Tokens">
-    <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        API Tokens
-      </h2>
-    </template>
-
-    <div>
-      <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <api-token-manager
-          :tokens="tokens"
-          :available-permissions="availablePermissions"
-          :default-permissions="defaultPermissions"
-        />
-      </div>
-    </div>
-  </app-layout>
-</template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ApiTokenManager from '@/views/pages/API/Partials/ApiTokenManager.vue'
-import AppLayout from '@/views/layouts/AppLayout.vue'
-
-export default defineComponent({
-
-  components: {
-    ApiTokenManager,
-    AppLayout
-  },
-  props: [
-    'tokens',
-    'availablePermissions',
-    'defaultPermissions'
-  ]
-})
+<script lang="ts" setup>
+import ApiTokenManager from './Partials/ApiTokenManager.vue'
+import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
+import { Token } from '@/scripts/types/inertia-props'
+defineProps<{tokens: Token[], availablePermissions: string[], defaultPermissions: string }>()
 </script>
+
+<template>
+  <dashboard-layout title="API Tokens">
+    <q-page
+      padding
+      class="fit column content-stretch"
+    >
+      <api-token-manager
+        :tokens="tokens"
+        :available-permissions="availablePermissions"
+        :default-permissions="defaultPermissions"
+      />
+    </q-page>
+  </dashboard-layout>
+</template>
