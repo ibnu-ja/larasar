@@ -95,7 +95,7 @@ function displayableRole (role: string) : string {
 
         <q-item-label
           header
-          class="q-pa-none"
+          class="q-pa-sm q-px-md"
         >
           Role
         </q-item-label>
@@ -163,7 +163,10 @@ function displayableRole (role: string) : string {
 
       <!-- Pending Team Member Invitation List -->
       <template #content>
-        <q-list dense>
+        <q-list
+          dense
+          class="q-pb-md"
+        >
           <q-item
             v-for="invitation in team.team_invitations"
             :key="invitation.id"
@@ -194,7 +197,7 @@ function displayableRole (role: string) : string {
     <q-separator class="q-my-md" />
 
     <!-- Manage Team Members -->
-    <action-section class="mt-10 sm:mt-0">
+    <action-section>
       <template #title>
         Team Members
       </template>
@@ -205,7 +208,10 @@ function displayableRole (role: string) : string {
 
       <!-- Team Member List -->
       <template #content>
-        <q-list dense>
+        <q-list
+          dense
+          class="q-pb-md"
+        >
           <q-item
             v-for="user in team.users"
             :key="user.id"
@@ -262,7 +268,7 @@ function displayableRole (role: string) : string {
     </action-section>
   </div>
 
-  <!-- Role Management Modal -->
+  <!-- Role Management Dialog -->
   <q-dialog
     v-model="currentlyManagingRole"
   >
