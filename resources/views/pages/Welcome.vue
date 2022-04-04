@@ -52,7 +52,7 @@ const widthSize = () => {
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-card-section>
+            <q-card-section class="q-pt-none">
               Laravel has wonderful documentation covering every aspect of the framework. Whether you're new to the framework or have previous experience, we recommend reading all of the documentation from beginning to end.
             </q-card-section>
           </div>
@@ -79,7 +79,7 @@ const widthSize = () => {
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-card-section>
+            <q-card-section class="q-pt-none">
               Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
             </q-card-section>
           </div>
@@ -107,7 +107,7 @@ const widthSize = () => {
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-card-section>
+            <q-card-section class="q-pt-none">
               Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
             </q-card-section>
           </div>
@@ -136,7 +136,7 @@ const widthSize = () => {
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-card-section>
+            <q-card-section class="q-pt-none">
               Laravel Jetstream using Quasar Framework, open source framework for building web applications. Build high performance & high quality application with <strong>Vue.js 3</strong>.
             </q-card-section>
           </div>
