@@ -1,5 +1,27 @@
+<script lang="ts" setup>
+import { Permission, Role, Team } from '@/scripts/types/inertia-props'
+import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
+// import DeleteTeamForm from './Partials/DeleteTeamForm.vue'
+// import TeamMemberManager from './Partials/TeamMemberManager.vue'
+import UpdateTeamNameForm from './Partials/UpdateTeamNameForm.vue'
+defineProps<{team: Team, availableRoles: Role[], permissions: Permission}>()
+</script>
+
 <template>
-  <app-layout title="Team Settings">
+  <dashboard-layout title="Team Settings">
+    <q-page
+      padding
+      class="fit column content-stretch"
+    >
+      <update-team-name-form
+        :team="team"
+        :permissions="permissions"
+      />
+
+      <q-separator class="q-my-md" />
+    </q-page>
+  </dashboard-layout>
+  <!-- <app-layout title="Team Settings">
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         Team Settings
@@ -30,30 +52,5 @@
         </template>
       </div>
     </div>
-  </app-layout>
+  </app-layout> -->
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import AppLayout from '@/views/layouts/AppLayout.vue'
-import DeleteTeamForm from '@/views/pages/Teams/Partials/DeleteTeamForm.vue'
-import JetSectionBorder from '@/views/jetstream/SectionBorder.vue'
-import TeamMemberManager from '@/views/pages/Teams/Partials/TeamMemberManager.vue'
-import UpdateTeamNameForm from '@/views/pages/Teams/Partials/UpdateTeamNameForm.vue'
-
-export default defineComponent({
-
-  components: {
-    AppLayout,
-    DeleteTeamForm,
-    JetSectionBorder,
-    TeamMemberManager,
-    UpdateTeamNameForm
-  },
-  props: [
-    'team',
-    'availableRoles',
-    'permissions'
-  ]
-})
-</script>
