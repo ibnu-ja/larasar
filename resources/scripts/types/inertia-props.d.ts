@@ -64,6 +64,15 @@ export interface Session {
   last_active?: string
 }
 
+export interface Invitation {
+  id: number
+  team_id: number
+  email: string
+  role: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Team {
   id: number
   user_id: number
@@ -73,7 +82,7 @@ export interface Team {
   updated_at: string
   owner: User
   users: User[]
-  team_invitations: any[]
+  team_invitations: Invitation[]
 }
 
 export interface Role {

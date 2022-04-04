@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Permission, Role, Team, User } from '@/scripts/types/inertia-props'
+import { Invitation, Permission, Role, Team, User } from '@/scripts/types/inertia-props'
 import { computed, inject, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/inertia-vue3'
 import ActionSection from '@/views/components/ActionSection.vue'
@@ -19,9 +19,9 @@ const updateRoleForm = useForm({
 const leaveTeamForm = useForm({})
 const removeTeamMemberForm = useForm({})
 const currentlyManagingRole = ref(false)
-const managingRoleFor = ref(null)
+const managingRoleFor = ref<User | null>(null)
 const confirmingLeavingTeam = ref(false)
-const teamMemberBeingRemoved = ref(false)
+const teamMemberBeingRemoved = ref<boolean | User>(false)
 const confirmingRemovingTeamMember = ref(false)
 function addTeamMember () {
   addTeamMemberForm.post(route('team-members.store', props.team), {
@@ -30,14 +30,14 @@ function addTeamMember () {
     onSuccess: () => addTeamMemberForm.reset()
   })
 }
-function cancelTeamInvitation (invitation) {
+function cancelTeamInvitation (invitation: Invitation) {
   Inertia.delete(route('team-invitations.destroy', invitation), {
     preserveScroll: true
   })
 }
-function manageRole (teamMember) {
+function manageRole (teamMember: User) {
   managingRoleFor.value = teamMember
-  updateRoleForm.role = teamMember.membership.role
+  updateRoleForm.role = teamMember.membership!.role
   currentlyManagingRole.value = true
 }
 function updateRole () {
@@ -52,7 +52,7 @@ function confirmLeavingTeam () {
 function leaveTeam () {
   leaveTeamForm.delete(route('team-members.destroy', [props.team, currentUser]))
 }
-function confirmTeamMemberRemoval (teamMember) {
+function confirmTeamMemberRemoval (teamMember: User) {
   confirmingRemovingTeamMember.value = true
   teamMemberBeingRemoved.value = teamMember
 }
@@ -64,11 +64,9 @@ function removeTeamMember () {
     onSuccess: () => (teamMemberBeingRemoved.value = false)
   })
 }
-function displayableRole (role) {
-  return props.availableRoles.find(r => r.key === role)?.name
+function displayableRole (role: string) : string {
+  return props.availableRoles.find(r => r.key === role)!.name
 }
-
-const check1 = ref(false)
 </script>
 
 <template>
@@ -232,13 +230,13 @@ const check1 = ref(false)
                 <q-btn
                   v-if="userPermissions.canAddTeamMembers && availableRoles.length"
                   flat
+                  :label="displayableRole(user.membership!.role)"
                   @click="manageRole(user)"
-                  v-text="displayableRole(user.membership?.role)"
                 />
                 <template
                   v-else-if="availableRoles.length"
                 >
-                  {{ displayableRole(user.membership?.role) }}
+                  {{ displayableRole(user.membership!.role) }}
                 </template>
                 <q-btn
                   v-if="currentUser.id === user.id"
