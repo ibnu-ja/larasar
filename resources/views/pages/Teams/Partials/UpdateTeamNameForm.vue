@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import FormSection from '@/views/components/AppFormSection.vue'
+import FormSection from '@/views/components/FormSection.vue'
 import { inject } from 'vue'
 import { useForm } from '@inertiajs/inertia-vue3'
 const route: any = inject('route')

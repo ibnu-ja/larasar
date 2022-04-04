@@ -2,7 +2,7 @@
 import { Jetstream, User } from '@/scripts/types/inertia-props'
 import { Ref, computed, inject, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/inertia-vue3'
-import AppFormSection from '@/views/components/AppFormSection.vue'
+import FormSection from '@/views/components/FormSection.vue'
 import { Inertia } from '@inertiajs/inertia'
 const route: any = inject('route')
 const props = defineProps<{user: User}>()
@@ -46,7 +46,7 @@ function clearPhotoFileInput () {
 </script>
 
 <template>
-  <app-form-section @submitted="updateProfileInformation">
+  <form-section @submitted="updateProfileInformation">
     <template #title>
       Profile Information
     </template>
@@ -149,5 +149,5 @@ function clearPhotoFileInput () {
         Save
       </q-btn>
     </template>
-  </app-form-section>
+  </form-section>
 </template>

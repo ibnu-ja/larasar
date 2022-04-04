@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, inject } from 'vue'
 import { useForm, usePage } from '@inertiajs/inertia-vue3'
-import FormSection from '@/views/components/AppFormSection.vue'
+import FormSection from '@/views/components/FormSection.vue'
 import { User } from '@/scripts/types/inertia-props'
 
 const user = computed(() => usePage().props.value.user as User)
