@@ -6,7 +6,7 @@ import ActionSection from '@/views/components/ActionSection.vue'
 import CodeBlock from '@/views/components/CodeBlock.vue'
 import FormSection from '@/views/components/AppFormSection.vue'
 
-const props = defineProps<{tokens: Token[], availablePermissions: string[], defaultPermissions: string }>()
+const props = defineProps<{tokens: Token[], availablePermissions: string[], defaultPermissions: string[] }>()
 const route : any = inject('route')
 const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
 const createApiTokenForm = useForm({

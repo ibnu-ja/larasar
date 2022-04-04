@@ -2,7 +2,7 @@
 import ApiTokenManager from './Partials/ApiTokenManager.vue'
 import DashboardLayout from '@/views/layouts/DashboardLayout.vue'
 import { Token } from '@/scripts/types/inertia-props'
-defineProps<{tokens: Token[], availablePermissions: string[], defaultPermissions: string }>()
+defineProps<{tokens: Token[], availablePermissions: string[], defaultPermissions: string[] }>()
 </script>
 
 <template>
