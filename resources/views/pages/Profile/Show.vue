@@ -14,7 +14,6 @@ const jetstream = computed(() => usePage().props.value.jetstream as Jetstream)
 </script>
 
 <template>
-  <!-- eslint-disable vue/multi-word-component-names -->
   <dashboard-layout title="Profile">
     <q-page
       padding
