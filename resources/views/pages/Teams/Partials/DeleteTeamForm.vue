@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue'
 import ActionSection from '@/views/components/ActionSection.vue'
-import { Team } from '@/types/team'
+import { Team } from '@/scripts/types/inertia-props'
 import { useForm } from '@inertiajs/inertia-vue3'
 const props = defineProps<{team: Team}>()
 const route: any = inject('route')
