@@ -12,29 +12,6 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-/// Incrementally lighten a color in a more effective way than with lighten()
-/// @param {Color} $color - color to tint
-/// @param {Number} $percentage - Percentage of white in the returned color
-/// @return {Color} - The lightened color
-@function tint($color, $percentage) {
-    @return mix(#fff, $color, $percentage);
-}
-
-/// Incrementally darken a color in a more effective way than with darken()
-/// @param {Color} $color - Color to shade
-/// @param {Number} $percentage - Percentage of black in the returned color
-/// @return {Color} - The darkened color
-@function shade($color, $percentage) {
-    @return mix(#000, $color, $percentage);
-}
-// @function background-opacity($color, $opacity: 0.2) { 
-//      @return rgba($color, $opacity);
-// }
-
-// element {
-//     @include background-opacity(#333, 0.5);
-// }
-
 $primary: #1976d2;
 $secondary: #26a69a;
 $accent: #9c27b0;
